@@ -1,0 +1,83 @@
+h1 {
+  color: #ffff;
+  backdrop-filter: brightness(none);
+  opacity: 70%;
+  font-size: 25px;
+}
+
+
+.form{
+   display: inline-flex;
+   flex-direction: column;
+}
+
+button{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 7px;
+  background-color: rgba(237, 217, 192, 0.7);
+  border: none
+}
+
+button:hover{
+  cursor: pointer;
+  background-color: rgb(250, 220, 184);
+}
+
+.linkLogIn {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  border-radius: 7px;
+  padding:0px 44%;
+  /* background-color: red; */
+}
+
+.link{
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  border-radius: 7px;
+  padding: 0px 5px;
+  background-color: rgba(237, 217, 192, 0.7);
+}
+
+.link:hover{
+  background-color: rgb(250, 220, 184);
+}
+
+input{
+  color:beige;
+  background: none;
+  border-radius: 5px;
+  border: 1px solid silver; 
+}
+input::placeholder{
+  color: rgb(249, 239, 226);
+}
+
+.errors { 
+  font-size:18px;
+  color:red
+}
+
+.profile-page{
+  display: contents;
+  color:wheat;
+  font-size: 18px;
+}
+
+.change-color{
+  display: flex;
+  flex-direction: column;
+}
+
+.color-btn{
+  margin-top: 10px;
+}
+
+
+.profile-wrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
