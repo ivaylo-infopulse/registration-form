@@ -10,6 +10,7 @@ function App() {
   return (
     <div className="App">
       <div className='app-wrapper'>
+    <h1>hello</h1>
         <Routes>
           <Route path='/register' element={<Register/>}/>
           <Route path='/' element={<Login/>}/>
