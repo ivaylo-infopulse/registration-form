@@ -25,6 +25,10 @@
   }
 
   & label{
+    position: relative;
+    top:77px;
+    left: -55px;
+    width: 55px;
     padding-top: 10px;
     font-size: 15px;
     

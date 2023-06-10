@@ -22,12 +22,12 @@ export const Profile = () => {
   let theIndex;
   
   existingData?.find((data, index) => {
-    if(data.user === user.user){
-      return theIndex = index
-    }
+    if(data.user === user.user)
+    theIndex = index
+    return theIndex
   })
+  
   const [selectedImage, setSelectedImage] = useState(existingData[theIndex]?.image);
-  // debugger
   
   const onLogOut = ()=>{
     dispatch(changeColor('wheat'))
@@ -40,19 +40,20 @@ export const Profile = () => {
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
+
     if (file) {
       const reader = new FileReader();
+
       reader.onload = () => {
         const imageData = reader.result;
         if (existingData) {
-          // Parse existing data as object
+        
           if (!existingData[theIndex].image) {
-            // If image property doesn't exist, add it
-            existingData[theIndex].image = imageData;
-          } else {
-            // If image property exists, update its value
-            existingData[theIndex].image = imageData;
+             existingData[theIndex].image = imageData;
+          }else{
+             existingData[theIndex].image = imageData;
           }
+
         }
 
         setSelectedImage(existingData[theIndex].image)
@@ -63,10 +64,7 @@ export const Profile = () => {
     }
   };
 
-  // const handleDropdownClick = (e) => {
-  //   // Handle dropdown item click event here
-  // };
-
+  
   const imageChange=()=>{
     document.getElementById('file-input').click();
   }
