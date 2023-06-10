@@ -1,19 +1,20 @@
 // @ts-nocheck
 import React, {useRef}from 'react'
 import { useDispatch } from 'react-redux'
-import { changeColor } from '../features/theme'
+import { changeColor } from '../../features/theme'
+import './styles.css'
 
 const ChangeColor = () => {
-  const dispatch = useDispatch();
-  const inputRef = useRef();
+  const dispatch = useDispatch()
+  const inputRef = useRef()
 
   return (
     <div className='change-color'>
       <br/>
       <input  
-        type="text" 
-        placeholder='Set another color'
-        ref={inputRef}
+        type = 'text'
+        placeholder = 'Set another color'
+        ref = {inputRef}
       />
 
       <button className='color-btn' onClick={()=> {

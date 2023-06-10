@@ -1,0 +1,8 @@
+.change-color{
+  display: flex;
+  flex-direction: column;
+}
+
+.color-btn{
+  margin-top: 10px;
+}

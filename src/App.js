@@ -1,9 +1,9 @@
-import './App.css';
-import React from 'react';
-import {Login} from './components/Login';
-import { Route, Routes } from 'react-router-dom';
-import { Profile } from './components/Profile';
-import { Register } from './components/Register';
+import './App.css'
+import React from 'react'
+import {Login} from './components/login/Login'
+import { Route, Routes } from 'react-router-dom'
+import { Profile } from './components/profile/Profile'
+import { Register } from './components/registration/Register'
 
 function App() {
 
