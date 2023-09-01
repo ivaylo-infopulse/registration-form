@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "./styles.css";
 
+
 const ProductsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -73,6 +74,7 @@ const ProductsList = () => {
       requestAnimationFrame(animateScroll);
     }
   }, [userProducts]);
+
 
   return (
     <>
