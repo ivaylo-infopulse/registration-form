@@ -74,7 +74,6 @@ const ProductsList = () => {
     }
   }, [userProducts]);
 
-
   return (
     <>
       {isLoading ? (
