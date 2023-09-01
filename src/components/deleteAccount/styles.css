@@ -1,0 +1,32 @@
+.App {
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .sudoku-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 2px;
+    margin-top: 1rem;
+  }
+  
+  .sudoku-row {
+    display: flex;
+  }
+  
+  .sudoku-cell {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    height: 2rem;
+    font-size: 1.5rem;
+  }
+  
+  input {
+    width: 100%;
+    border: none;
+    text-align: center;
+    font-size: inherit;
+  }

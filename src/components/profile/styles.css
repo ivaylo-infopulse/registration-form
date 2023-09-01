@@ -1,0 +1,257 @@
+.profile-page {
+  display: contents;
+  align-items: center;
+  color:wheat;
+  font-size: 18px;   
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: -60px;
+  padding-bottom: 150px;
+
+  & label {
+    z-index: 20;
+  }
+
+  & img {
+    position: relative;
+    top: 71px;
+    left: -60px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    z-index: 99999;
+    
+    &:hover{
+      opacity: 80%;
+    }
+  }
+
+  & label{
+    position: relative;
+    top:83px;
+    left: -55px;
+    width: 55px;
+    padding-top: 10px;
+    font-size: 15px;
+    
+    &:hover{
+      cursor: pointer;
+    }
+  
+    & input {
+      display: none;
+    }
+  }
+
+  & P{
+   padding: 0px 10px;
+  }
+}
+
+.upload-img{
+  padding: 7px 6px 6px 10px;
+  &:hover{
+    font-weight: 600;
+    color: greenyellow 
+  }
+}
+  
+.profileBtn{
+  display: flex; 
+  padding: 0px 0px 0px 60px;
+  flex-direction: row;
+  width: 180px;
+  background: rgb(247, 222, 176, 0.20);
+  color: wheat;
+  font-size: 15px;
+  font-weight: 600;
+  overflow: hidden;
+  transition: height 0.7s ease;
+  
+  &:hover {
+    background-color: rgb(247, 222, 176,0.40);
+  }
+
+  &:hover .dropdown-menu2 {
+    display: block;
+  }
+  
+  .file-input{
+    display: none; 
+    position: absolute;
+    z-index:99999;
+  }
+}
+
+.dropdown-menu2 {
+  position: absolute;
+  margin-top: 15px;
+  width: 140px;
+  display: block;
+  height: 0px;
+  margin-left: -60px;
+  background-color: rgb(172, 170, 155);
+  border-radius: 3px;
+  list-style-type: none;
+  overflow: hidden;
+  transition: height 0.3s ease;
+
+  & li{
+    padding: 3.5px;
+    &:hover {
+      /* background-color: rgba(159, 157, 139, 0.651); */
+      color: rgb(246, 198, 41);
+      font-size: 16px;
+    }
+  }
+
+  & button {
+    background: none;
+    border: none;
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    cursor: pointer;
+    color: rgba(216, 64, 64, 0.854); 
+    font: inherit;
+    &:hover {
+      background: none;
+      color: red;
+    }
+  }
+}
+
+.profile-dropdown {
+  height: 0px;
+}
+
+.profile-dropdown:hover .dropdown-menu2 {
+  height: 49px;
+}
+
+
+.image-container {
+  position: relative;  
+}
+
+.dropdown-menu {
+  position: absolute;
+  left: -67px;
+  top: 117px;
+  width: 178px;
+  height: 0px;
+  z-index: 10;
+  background-color: #959595;
+  color: wheat;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: height 0.7s ease;
+}
+
+.image-container:hover .dropdown-menu {
+  height: 59px;
+}
+
+.dropdown-menu ul {
+  border: 1px solid #ccc;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dropdown-menu li {
+  cursor: pointer;
+  padding: 4px;
+}
+
+.dropdown-menu li:hover {
+  background-color: #6e6c6c;
+}
+
+
+.test{
+  /* display: none; */
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
+  transition: height 0.3s;
+}
+
+.profile-wrapper {
+  margin: 67px 0px -75px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: auto;
+  height: 260px;
+  transition: height 0.5s;
+  /* border-radius: 10px 10px 40px 40px; */
+  /* background-color: rgba(107, 94, 69, 0.285); */
+  /* box-shadow: 0px 1px 6px 3px rgba(73, 64, 64, 0.507); */
+}
+
+.log-out-link {
+  display: none;
+}
+
+.log-out-button, .users-list{
+  margin: 5px 0px;
+}
+
+.users-list, .sudoku-link{
+  margin-top: 5px;
+  background-color: rgb(138, 185, 95);
+  
+  &:hover{
+    background-color: rgb(178, 240, 121);
+  }
+}
+
+.popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(19, 13, 6);
+  padding: 15px 60px;
+  border: 1px solid #5cbcd9;
+  border-radius: 7px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    & span {
+      color: rgb(30, 139, 241);
+      font-size: larger;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    & div {
+      display: flex;
+      width: 100%;
+      margin-top: 10px;
+      justify-content: space-between;
+    };
+}
+
+.popup input {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.popup button {
+  margin-top: 0px;
+}
+
+.label-error{
+  display: flex;
+  width: 200px !important;
+  left: 0px !important;
+  top: 0px !important;
+}
