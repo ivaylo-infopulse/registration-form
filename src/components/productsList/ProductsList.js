@@ -11,6 +11,7 @@ import "./styles.css";
 const ProductsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const registrationToken = localStorage.getItem("registrationToken");
   const userProducts = useSelector((state) => state.user.basket);
   const totalPrice = useSelector((state) =>
     parseFloat(state.user.totalPrice.toFixed(2))
@@ -21,6 +22,10 @@ const ProductsList = () => {
   const [isBasket, setIsBaskt] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const basketContainerRef = useRef(null);
+
+  useEffect(() => {
+    !registrationToken && navigate("/");
+  });
 
   useEffect(() => {
     const apiUrl = "https://fakestoreapi.com/products";
