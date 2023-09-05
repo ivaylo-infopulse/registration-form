@@ -143,8 +143,8 @@ const TheGame = () => {
   let sudoku = getDeepCopy(initialGrid);
   solver(sudoku);
   const isReady = compareSudokus(sudokuArr, sudoku);
-  // const token = JSON.parse(registrationToken);
-  // const timeExpiration = Date.now() > token.expiresAt;
+  const token = JSON.parse(registrationToken);
+  const timeExpiration = Date.now() > token.expiresAt;
 
   useEffect(() => {
     if (isReady.isComplate && isSolved) {
@@ -152,11 +152,11 @@ const TheGame = () => {
       buttonRef.current.click(); // Triger getTimeScore function
       alert("Great, you solved!");
     }
-    // if (timeExpiration) {
-    //   alert("Your session has been expired!");
-    //   navigate("/");
-    // }
-  }, [isReady.isComplate, isSolved, navigate, registrationToken]);
+    if (timeExpiration) {
+      alert("Your session has been expired!");
+      navigate("/");
+    }
+  }, [isReady.isComplate, isSolved, navigate, registrationToken, timeExpiration]);
 
   const getTimeScore = (theTime) => {
     const existingData = JSON.parse(localStorage.getItem("userData"));
