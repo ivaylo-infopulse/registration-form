@@ -16,8 +16,6 @@ const TheGame = () => {
   const [isSolved, setIsSolved] = useState(true);
   const buttonRef = useRef(null);
 
-
-
   // create a deep copy of an array
   const getDeepCopy = (arr) => JSON.parse(JSON.stringify(arr));
   const [sudokuArr, setSudokuArr] = useState(getDeepCopy(initialGrid));
@@ -145,23 +143,25 @@ const TheGame = () => {
   let sudoku = getDeepCopy(initialGrid);
   solver(sudoku);
   const isReady = compareSudokus(sudokuArr, sudoku);
+  const token = JSON.parse(registrationToken);
+  const timeExpiration = Date.now() > token.expiresAt;
 
   useEffect(() => {
-    !registrationToken && navigate("/");
     if (isReady.isComplate && isSolved) {
       setIsStop(false);
       buttonRef.current.click(); // Triger getTimeScore function
       alert("Great, you solved!");
     }
-  }, [isReady.isComplate, isSolved, navigate, registrationToken]);
+    if (timeExpiration) {
+      alert("Your session has been expired!");
+      navigate("/");
+    }
+  }, [isReady.isComplate, isSolved, navigate, registrationToken, timeExpiration]);
 
   const getTimeScore = (theTime) => {
     const existingData = JSON.parse(localStorage.getItem("userData"));
-    const userId = existingData.findIndex(
-      (data) => data?.name === user?.name
-    );
+    const userId = existingData.findIndex((data) => data?.name === user?.name);
     if (existingData && existingData[userId]?.timeScore) {
-
       // check for if user has time score and update for the best scored time
       if (
         existingData[userId]?.timeScore > theTime ||

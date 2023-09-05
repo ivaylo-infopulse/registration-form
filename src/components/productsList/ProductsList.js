@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "./styles.css";
 
-
 const ProductsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,7 +23,8 @@ const ProductsList = () => {
   const basketContainerRef = useRef(null);
 
   useEffect(() => {
-    !registrationToken && navigate("/");
+    const token = JSON.parse(registrationToken);
+    Date.now() > token.expiresAt && navigate("/");
   });
 
   useEffect(() => {
@@ -80,7 +80,6 @@ const ProductsList = () => {
     }
   }, [userProducts]);
 
-
   return (
     <>
       {isLoading ? (
@@ -116,7 +115,9 @@ const ProductsList = () => {
               );
             })}
           </ul>
-          <div className="total-cost">Total cost: {totalPrice} $</div>
+          <div className="total-cost">
+            {totalPrice > 0 ? `Total cost: ${totalPrice} $`: 'Basket is empty'}
+          </div>
         </div>
       )}
 
@@ -133,7 +134,9 @@ const ProductsList = () => {
                   onMouseEnter={() => setShowAddButton(index)}
                   onMouseLeave={() => setShowAddButton(null)}
                 />
-                <p className="product-price">Price: {product.price} $</p>
+                <label className="product-price">
+                  Price: {product.price} $
+                </label>
                 {showAddButton === index && (
                   <button
                     className="add-button"

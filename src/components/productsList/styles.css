@@ -99,6 +99,13 @@
     width: 95px;
     margin: 20px 10px -10px 10px;
   }
+
+  .product-price {
+    color: gold;
+    display: block;
+    margin-top: 16px;
+    font-size: 16px;
+  }
   
   .cost-price {
     color: rgb(229, 241, 229);

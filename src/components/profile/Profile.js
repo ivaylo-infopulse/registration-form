@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { changeColor } from "../../features/theme";
@@ -29,9 +28,10 @@ export const Profile = () => {
   const [isPassMatch, setIsPassMatch]=useState()
   const [popUp, setPopUp] = useState(false);
   const btnRef = useRef();
-
+  
   useEffect(() => {
-    !registrationToken && navigate("/");
+    const token = JSON.parse(registrationToken);
+    Date.now() > token.expiresAt && navigate("/"); 
   });
 
   const onLogOut = () => {
