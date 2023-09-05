@@ -9,16 +9,6 @@ export const Timer = ({ isRunning }) => {
   const [minutes, setMinutes] = useState(0)
   const [hours, setHours] = useState(0)
   
-  useEffect(() => {
-    if(isRunning){
-        const interval = setInterval(() => {
-            setSeconds(seconds => seconds + 1)
-        }, 1000);
-      return () => clearInterval(interval)
-    } else {
-      dispatch(timer(time))
-    }
-  }, [isRunning])
 
   useEffect(() => {
     if (seconds === 60) {
@@ -36,6 +26,17 @@ export const Timer = ({ isRunning }) => {
   : hours}:${minutes < 10 ? `0${minutes}` 
   : minutes}:${seconds < 10 ? `0${seconds}` 
   : seconds}`
+
+  useEffect(() => {
+    if(isRunning){
+        const interval = setInterval(() => {
+            setSeconds(seconds => seconds + 1)
+        }, 1000);
+      return () => clearInterval(interval)
+    } else {
+      dispatch(timer(time))
+    }
+  }, [isRunning, dispatch, time])
  
   
   return time

@@ -81,7 +81,33 @@
     flex-wrap: wrap;
     width: 80%;
     justify-content: center;
+    overflow-y: scroll;
+    background-color: #c904041c;
+    border-radius: 10px;
+    box-shadow: 0px 0px 36px rgba(152, 1, 1, 0.35);
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 20px;
+      background-color: rgba(155, 41, 41, 0.349);
+    }
+
+    &:hover {
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+      &::-webkit-scrollbar-thumb {
+        border-radius: 20px;
+        background-color: rgba(255, 0, 0, 0.644);
+      }
+    }
   }
+
+  
+  
+  
   
   .product-list {
     display: flex;
@@ -89,6 +115,7 @@
     align-items: center;
     position: relative;
     color: gold;
+    height: 400px;
   }
    h1 {
     color: rgb(255, 255, 0);
@@ -102,9 +129,27 @@
 
   .product-price {
     color: gold;
-    display: block;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
     margin-top: 16px;
     font-size: 16px;
+    position: relative;
+  }
+
+
+  .add-discount {
+    color: rgb(255, 77, 0);
+    
+    &:after {
+      position: absolute;
+      content: "";
+      width: 26%;
+      border-bottom: 2px solid red;
+      transform: rotate(-23deg);
+      top: 8px;
+      left: 57px;
+    }
   }
   
   .cost-price {
@@ -152,16 +197,16 @@
   }
   
   .trash-icon {
-    color: rgb(205, 17, 17);
+    color: rgba(154, 12, 12, 0.792);
     margin-left:8px;
-    width: 16px;
-    height: 17px;
+    width: 15px;
+    height: 16px;
   }
   
   .trash-icon:hover {
     color: red;
-      width: 18px;
-      height: 21px;
+      width: 16px;
+      height: 20px;
   }
   
   
@@ -190,3 +235,14 @@
     transform: translate3d(-50%, -50%, 0);
     will-change: transform;
   }
+
+  .no-discount{
+    display: none;
+  }
+
+  .discount{
+    display: block;
+    color:#3cff00;
+  }
+
+  

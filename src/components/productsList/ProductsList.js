@@ -12,17 +12,16 @@ const ProductsList = () => {
   const navigate = useNavigate();
   const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
-  const user = useSelector((state) => state.user?.value);
+  const { user, userProducts, totalPrice } = useSelector((state) => ({
+    user: state.user?.value,
+    userProducts: state.user?.basket,
+    totalPrice: parseFloat(state.user.totalPrice).toFixed(2),
+  }));
   const userId = existingData.findIndex((data) => data?.name === user?.name);
-  const userProducts = useSelector((state) => state.user.basket);
-  const totalPrice = useSelector((state) =>
-    parseFloat(state.user.totalPrice).toFixed(2)
-  );
   const [productList, setProductList] = useState([]);
   const [showAddButton, setShowAddButton] = useState(null);
   const [basketList, setBasketList] = useState(userProducts);
   const [isBasket, setIsBaskt] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const basketContainerRef = useRef(null);
   const discount = existingData[userId].discount;
 
@@ -32,16 +31,14 @@ const ProductsList = () => {
   });
 
   useEffect(() => {
-    const apiUrl = "https://fakestoreapi.com/products";
-    axios
-      .get(apiUrl)
-      .then((response) => {
+    (async () => {
+      try {
+        const response = await axios.get("https://fakestoreapi.com/products");
         setProductList(response.data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching product data:", error);
-      });
+      }
+    })();
   }, []);
 
   const onAddProduct = (image, price) => {
@@ -69,25 +66,26 @@ const ProductsList = () => {
     if (basketContainerRef.current) {
       const targetScroll = basketContainerRef.current.scrollHeight;
       const currentScroll = basketContainerRef.current.scrollTop;
-      const distance = targetScroll - currentScroll;
       let startTime = null;
 
       const animateScroll = (timestamp) => {
         if (!startTime) startTime = timestamp;
         const progress = (timestamp - startTime) / 600;
-
         basketContainerRef.current.scrollTop =
-          currentScroll + distance * progress;
-        if (progress < 1) requestAnimationFrame(animateScroll);
+          currentScroll + (targetScroll - currentScroll) * progress;
+
+        progress < 1 && requestAnimationFrame(animateScroll);
       };
       requestAnimationFrame(animateScroll);
     }
   }, [userProducts]);
 
+  const applyDiscount = (productPrice) => (productPrice * (1 - 0.2)).toFixed(2);
+
   return (
     <>
-      {isLoading ? (
-        <div className="spin"></div>
+      {productList.length === 0 ? (
+        <div className="spin" />
       ) : (
         <div className="product-buttons-container">
           <button onClick={() => setIsBaskt(!isBasket)}>
@@ -96,6 +94,7 @@ const ProductsList = () => {
           <button onClick={() => navigate("/profile")}>Back to profile</button>
         </div>
       )}
+
       {isBasket && (
         <div className="basket-container" ref={basketContainerRef}>
           <span>Added products:</span>
@@ -110,11 +109,8 @@ const ProductsList = () => {
                     alt="product pic"
                   />
                   <p className="cost-price">
-                    Price
-                    {discount
-                      ? (product.price * (1 - 0.2)).toFixed(2)
-                      : product.price}
-                    $
+                    Price{" "}
+                    {discount ? applyDiscount(product.price) : product.price} $
                   </p>
                   <FontAwesomeIcon
                     className="trash-icon"
@@ -144,20 +140,17 @@ const ProductsList = () => {
                   onMouseEnter={() => setShowAddButton(index)}
                   onMouseLeave={() => setShowAddButton(null)}
                 />
-                <label className="product-price">
+                <div className="product-price">
                   Price:
-                  {discount ? (
-                    <>
-                      <div>{product.price}$</div>
-                      <div style={{ color: "#1bd41b" }}>
-                        {(product.price * (1 - 0.2)).toFixed(2)}$
-                      </div>
-                    </>
-                  ) : (
-                    <div>{product.price}$</div>
-                  )}
-                </label>
-                
+                  <span className={discount && "add-discount"}>
+                    {product.price}
+                  </span>
+                  $
+                </div>
+                <div className={discount ? "discount" : "no-discount"}>
+                  {applyDiscount(product.price)} $
+                </div>
+
                 {showAddButton === index && (
                   <button
                     className="add-button"

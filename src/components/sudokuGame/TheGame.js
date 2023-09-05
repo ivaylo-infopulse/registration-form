@@ -161,16 +161,17 @@ const TheGame = () => {
   const getTimeScore = (theTime) => {
     const existingData = JSON.parse(localStorage.getItem("userData"));
     const userId = existingData.findIndex((data) => data?.name === user?.name);
-      // check for if user has time score and update for the best scored time
-      if (
-        existingData[userId]?.timeScore > theTime ||
-        existingData[userId]?.timeScore === '' ||
-        !existingData[userId]?.timeScore
-      ) {
+    const userTimeScore = existingData[userId]?.timeScore;
+    // check for if user has time score and update for the best scored time
+    if (
+      userTimeScore === undefined ||
+      userTimeScore === '' ||
+      theTime < userTimeScore & theTime !== ''
+    )  {
         if( theTime < '00:01:30' && theTime!=='' && !existingData[userId].discount){
           existingData[userId].discount = true;
           localStorage.setItem("userData", JSON.stringify(existingData));
-          alert('You solve it under 1:20min, so you win 20% discount of all products')
+          alert('You solve it under 1:30min, so you win 20% discount of all products')
         }
         existingData[userId].timeScore = theTime;
         localStorage.setItem("userData", JSON.stringify(existingData));

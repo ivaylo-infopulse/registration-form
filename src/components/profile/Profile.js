@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { changeColor } from "../../features/theme";
 import { logout, addProducts } from "../../features/user";
 import { timer } from "../../features/timer";
 import { useNavigate } from "react-router-dom";
 import { DeleteAcc } from "../deleteAccount/DeleteAcc";
-// import ChangeColor from '../chnageColor/ChangeColor'
 import ListOfUsers from "../listOfUsers/ListOfUsers";
 import "./styles.css";
 
@@ -16,12 +14,12 @@ export const Profile = () => {
   const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
   const user = useSelector((state) => state.user?.value);
-  const themeColor = useSelector((state) => state.theme.value);
   const userId = existingData.findIndex((data) => data.name === user?.name);
   const [isList, setIsList] = useState(false);
   const [selectedImage, setSelectedImage] = useState(
     existingData[userId]?.image
   );
+  const discount = existingData[userId].discount
   const [className, setClassName] = useState("initial-profile");
   const [newPass, setNewPass] = useState();
   const [newPassConfirm, setNewPassConfirm] = useState();
@@ -35,9 +33,8 @@ export const Profile = () => {
   });
 
   const onLogOut = () => {
-    dispatch(changeColor("wheat"));
     dispatch(logout());
-    dispatch(timer(""));
+    dispatch(timer());
     dispatch(addProducts([]))
     navigate("/");
     localStorage.removeItem("registrationToken");
@@ -95,7 +92,7 @@ export const Profile = () => {
   };
 
   return (
-    <div className="profile-page" style={{ color: themeColor }}>
+    <div className="profile-page">
       <div className="profile-content">
         {selectedImage ? (
           <div className="image-container">
@@ -149,8 +146,8 @@ export const Profile = () => {
           <p>Name: {user.name}</p>
           <p>Email: {user.email}</p>
           <p>Phone: {user.phone}</p>
+          {discount && <p>discount: 20%</p>}
 
-          {/* <ChangeColor/> */}
           <button className="log-out-button" onClick={onLogOut}>
             Logout
           </button>
