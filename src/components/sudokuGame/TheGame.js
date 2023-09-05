@@ -167,6 +167,11 @@ const TheGame = () => {
         existingData[userId]?.timeScore === '' ||
         !existingData[userId]?.timeScore
       ) {
+        if( theTime < '00:01:30' && theTime!=='' && !existingData[userId].discount){
+          existingData[userId].discount = true;
+          localStorage.setItem("userData", JSON.stringify(existingData));
+          alert('You solve it under 1:20min, so you win 20% discount of all products')
+        }
         existingData[userId].timeScore = theTime;
         localStorage.setItem("userData", JSON.stringify(existingData));
       }

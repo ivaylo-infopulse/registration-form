@@ -30,8 +30,9 @@ const userSlice = createSlice({
 
     addProducts: (state, action) => {
       state.basket = [...action.payload];
+      const isDiscount = state.basket.some((item) => item.discount);
       state.totalPrice = state.basket
-        .map((price) => price.price)
+        .map((prop) => (isDiscount ? prop.price * (1 - 0.2) : prop.price))
         .reduce((partialSum, a) => partialSum + a, 0);
     },
   },

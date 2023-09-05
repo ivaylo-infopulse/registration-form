@@ -11,9 +11,12 @@ const ProductsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const registrationToken = localStorage.getItem("registrationToken");
+  const existingData = JSON.parse(localStorage.getItem("userData"));
+  const user = useSelector((state) => state.user?.value);
+  const userId = existingData.findIndex((data) => data?.name === user?.name);
   const userProducts = useSelector((state) => state.user.basket);
   const totalPrice = useSelector((state) =>
-    parseFloat(state.user.totalPrice.toFixed(2))
+    parseFloat(state.user.totalPrice).toFixed(2)
   );
   const [productList, setProductList] = useState([]);
   const [showAddButton, setShowAddButton] = useState(null);
@@ -21,6 +24,7 @@ const ProductsList = () => {
   const [isBasket, setIsBaskt] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const basketContainerRef = useRef(null);
+  const discount = existingData[userId].discount;
 
   useEffect(() => {
     const token = JSON.parse(registrationToken);
@@ -44,7 +48,7 @@ const ProductsList = () => {
     setIsBaskt(true);
     window.scrollTo(0, 10);
 
-    const updatedBasket = [...basketList, { image, price }];
+    const updatedBasket = [...basketList, { image, price, discount }];
     setBasketList(updatedBasket);
     dispatch(addProducts(updatedBasket));
   };
@@ -105,7 +109,13 @@ const ProductsList = () => {
                     src={product.image}
                     alt="product pic"
                   />
-                  <p className="cost-price">Price {product.price} $</p>
+                  <p className="cost-price">
+                    Price
+                    {discount
+                      ? (product.price * (1 - 0.2)).toFixed(2)
+                      : product.price}
+                    $
+                  </p>
                   <FontAwesomeIcon
                     className="trash-icon"
                     onClick={() => onDelete(index, product.price)}
@@ -116,7 +126,7 @@ const ProductsList = () => {
             })}
           </ul>
           <div className="total-cost">
-            {totalPrice > 0 ? `Total cost: ${totalPrice} $`: 'Basket is empty'}
+            {totalPrice > 0 ? `Total cost: ${totalPrice} $` : "Basket is empty"}
           </div>
         </div>
       )}
@@ -135,8 +145,19 @@ const ProductsList = () => {
                   onMouseLeave={() => setShowAddButton(null)}
                 />
                 <label className="product-price">
-                  Price: {product.price} $
+                  Price:
+                  {discount ? (
+                    <>
+                      <div>{product.price}$</div>
+                      <div style={{ color: "#1bd41b" }}>
+                        {(product.price * (1 - 0.2)).toFixed(2)}$
+                      </div>
+                    </>
+                  ) : (
+                    <div>{product.price}$</div>
+                  )}
                 </label>
+                
                 {showAddButton === index && (
                   <button
                     className="add-button"
