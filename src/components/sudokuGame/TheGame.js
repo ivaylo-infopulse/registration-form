@@ -144,9 +144,10 @@ const TheGame = () => {
   solver(sudoku);
   const isReady = compareSudokus(sudokuArr, sudoku);
   const token = JSON.parse(registrationToken);
-  const timeExpiration = Date.now() > token.expiresAt;
-
+  const timeExpiration = Date.now() > token?.expiresAt;
+  
   useEffect(() => {
+    !token && navigate("/"); 
     if (isReady.isComplate && isSolved) {
       setIsStop(false);
       buttonRef.current.click(); // Triger getTimeScore function
@@ -156,7 +157,7 @@ const TheGame = () => {
       alert("Your session has been expired!");
       navigate("/");
     }
-  }, [isReady.isComplate, isSolved, navigate, registrationToken, timeExpiration]);
+  }, [isReady.isComplate, isSolved, navigate, registrationToken, timeExpiration, token]);
 
   const getTimeScore = (theTime) => {
     const existingData = JSON.parse(localStorage.getItem("userData"));
@@ -173,7 +174,7 @@ const TheGame = () => {
           localStorage.setItem("userData", JSON.stringify(existingData));
           alert('You solve it under 1:30min, so you win 20% discount of all products')
         }
-        existingData[userId].timeScore = theTime;
+        theTime && (existingData[userId].timeScore = theTime);
         localStorage.setItem("userData", JSON.stringify(existingData));
       }
   };

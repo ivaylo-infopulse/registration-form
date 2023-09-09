@@ -23,11 +23,11 @@ const ProductsList = () => {
   const [basketList, setBasketList] = useState(userProducts);
   const [isBasket, setIsBaskt] = useState(false);
   const basketContainerRef = useRef(null);
-  const discount = existingData[userId].discount;
+  const discount = existingData[userId]?.discount;
 
   useEffect(() => {
     const token = JSON.parse(registrationToken);
-    Date.now() > token.expiresAt && navigate("/");
+    Date.now() > token?.expiresAt | !token && navigate("/"); 
   });
 
   useEffect(() => {

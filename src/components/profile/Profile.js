@@ -19,7 +19,7 @@ export const Profile = () => {
   const [selectedImage, setSelectedImage] = useState(
     existingData[userId]?.image
   );
-  const discount = existingData[userId].discount
+  const discount = existingData[userId]?.discount
   const [className, setClassName] = useState("initial-profile");
   const [newPass, setNewPass] = useState();
   const [newPassConfirm, setNewPassConfirm] = useState();
@@ -29,7 +29,7 @@ export const Profile = () => {
   
   useEffect(() => {
     const token = JSON.parse(registrationToken);
-    Date.now() > token.expiresAt && navigate("/"); 
+    Date.now() > token?.expiresAt | !token && navigate("/"); 
   });
 
   const onLogOut = () => {
