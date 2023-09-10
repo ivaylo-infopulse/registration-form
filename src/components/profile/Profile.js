@@ -19,23 +19,23 @@ export const Profile = () => {
   const [selectedImage, setSelectedImage] = useState(
     existingData[userId]?.image
   );
-  const discount = existingData[userId]?.discount
+  const discount = existingData[userId]?.discount;
   const [className, setClassName] = useState("initial-profile");
   const [newPass, setNewPass] = useState();
   const [newPassConfirm, setNewPassConfirm] = useState();
-  const [isPassMatch, setIsPassMatch]=useState()
+  const [isPassMatch, setIsPassMatch] = useState();
   const [popUp, setPopUp] = useState(false);
   const btnRef = useRef();
-  
+
   useEffect(() => {
     const token = JSON.parse(registrationToken);
-    Date.now() > token?.expiresAt | !token && navigate("/"); 
+    (Date.now() > token?.expiresAt) | !token && navigate("/");
   });
 
   const onLogOut = () => {
     dispatch(logout());
     dispatch(timer());
-    dispatch(addProducts([]))
+    dispatch(addProducts([]));
     navigate("/");
     localStorage.removeItem("registrationToken");
     window.location.reload();
@@ -45,17 +45,18 @@ export const Profile = () => {
     setIsList(!isList);
   };
 
-  useEffect(()=>{
-    if(newPass===newPassConfirm){
-      setIsPassMatch(true)
-    }else{
-      setIsPassMatch(false)
+  useEffect(() => {
+    if (newPass === newPassConfirm) {
+      setIsPassMatch(true);
+    } else {
+      setIsPassMatch(false);
     }
-  },[newPassConfirm])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newPassConfirm]);
 
   const onChangePassword = () => {
     setPopUp(!popUp);
-    if (newPass?.length>0 && newPass===newPassConfirm) {
+    if (newPass?.length > 0 && newPass === newPassConfirm) {
       existingData[userId].password = newPass;
       localStorage.setItem("userData", JSON.stringify(existingData));
     }
@@ -122,10 +123,14 @@ export const Profile = () => {
             <ul className="dropdown-menu2">
               <li>Profile Info</li>
               <li>
-                <DeleteAcc />
+                <DeleteAcc className={className} />
               </li>
               <li>
-                <button className="log-out-button" onClick={onChangePassword}>
+                <button
+                  className="log-out-button"
+                  tabIndex={-1}
+                  onClick={onChangePassword}
+                >
                   Change password
                 </button>
               </li>
@@ -148,12 +153,20 @@ export const Profile = () => {
           <p>Phone: {user.phone}</p>
           {discount && <p>discount: 20%</p>}
 
-          <button className="log-out-button" onClick={onLogOut}>
+          <button
+            className="log-out-button"
+            tabIndex={className !== "profile-wrapper" && -1}
+            onClick={onLogOut}
+          >
             Logout
           </button>
 
           {!popUp ? (
-            <button className="log-out-button" onClick={onChangePassword}>
+            <button
+              className="log-out-button"
+              tabIndex={className !== "profile-wrapper" && -1}
+              onClick={onChangePassword}
+            >
               Change password
             </button>
           ) : (
@@ -174,15 +187,19 @@ export const Profile = () => {
                   setNewPassConfirm(e.target.value);
                 }}
               />
-              <label className="label-error">{!isPassMatch&&'Passwords have to be the same!'}</label>
-              
+              <label className="label-error">
+                {!isPassMatch && "Passwords have to be the same!"}
+              </label>
+
               <div>
-                <button onClick={onChangePassword} disabled={!isPassMatch}>Submit</button>
+                <button onClick={onChangePassword} disabled={!isPassMatch}>
+                  Submit
+                </button>
                 <button
                   onClick={() => {
                     setNewPass();
                     setPopUp(false);
-                    setIsPassMatch(true)
+                    setIsPassMatch(true);
                   }}
                 >
                   cancel
