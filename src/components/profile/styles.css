@@ -18,8 +18,6 @@
 
   & img {
     position: relative;
-    top: 71px;
-    left: -60px;
     width: 45px;
     height: 45px;
     border-radius: 50%;
@@ -135,12 +133,15 @@
 
 .image-container {
   position: relative;
+  top: 71px;
+  left: -60px;
+  margin-top: 21px;
 }
 
 .dropdown-menu {
   position: absolute;
-  left: -67px;
-  top: 117px;
+  left: -6px;
+  top: 46px;
   width: 178px;
   height: 0px;
   z-index: 10;
