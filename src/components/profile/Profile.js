@@ -51,11 +51,11 @@ export const Profile = () => {
     }else{
       setIsPassMatch(false)
     }
-  },[newPass, newPassConfirm])
+  },[newPassConfirm])
 
   const onChangePassword = () => {
     setPopUp(!popUp);
-    if (newPass.length>0 && newPass===newPassConfirm) {
+    if (newPass?.length>0 && newPass===newPassConfirm) {
       existingData[userId].password = newPass;
       localStorage.setItem("userData", JSON.stringify(existingData));
     }
@@ -160,7 +160,7 @@ export const Profile = () => {
             <div className="popup">
               <span>Change password</span>
               <input
-                type="text"
+                type="password"
                 placeholder="Enter new password"
                 onChange={(e) => {
                   setNewPass(e.target.value);
@@ -168,7 +168,7 @@ export const Profile = () => {
                 ref={btnRef}
               />
               <input
-                type="text"
+                type="password"
                 placeholder="confirm new password"
                 onChange={(e) => {
                   setNewPassConfirm(e.target.value);
@@ -182,9 +182,10 @@ export const Profile = () => {
                   onClick={() => {
                     setNewPass();
                     setPopUp(false);
+                    setIsPassMatch(true)
                   }}
                 >
-                  chancel
+                  cancel
                 </button>
               </div>
             </div>
