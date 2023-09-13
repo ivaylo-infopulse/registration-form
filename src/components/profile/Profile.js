@@ -70,7 +70,7 @@ export const Profile = () => {
       reader.onload = () => {
         existingData?.[userId] &&
           setSelectedImage((existingData[userId].image = reader.result));
-        localStorage.setItem("userData", JSON.stringify(existingData));
+          localStorage.setItem("userData", JSON.stringify(existingData));
       };
       reader.readAsDataURL(file);
     } else {

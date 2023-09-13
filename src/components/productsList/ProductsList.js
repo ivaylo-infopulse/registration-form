@@ -6,11 +6,12 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "./styles.css";
+import { is } from "@babel/types";
 
 const ProductsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const registrationToken = localStorage.getItem("registrationToken");
+  // const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
   const { user, userProducts, totalPrice } = useSelector((state) => ({
     user: state.user?.value,
@@ -25,11 +26,11 @@ const ProductsList = () => {
   const basketContainerRef = useRef(null);
   const discount = existingData[userId]?.discount;
 
-  useEffect(() => {
-    const token = JSON.parse(registrationToken);
-    Date.now() > token?.expiresAt | !token && navigate("/"); 
-  });
-
+  // useEffect(() => {
+  //   const token = JSON.parse(registrationToken);
+  //   Date.now() > token?.expiresAt | !token && navigate("/"); 
+  // });
+ 
   useEffect(() => {
     (async () => {
       try {
@@ -41,23 +42,46 @@ const ProductsList = () => {
     })();
   }, []);
 
-  const onAddProduct = (image, price) => {
+  const onAddProduct = (image, price, id) => {
     setIsBaskt(true);
     window.scrollTo(0, 10);
 
-    const updatedBasket = [...basketList, { image, price, discount }];
+    const existingProductIndex = basketList.findIndex((product) => product.id === id);
+
+  if (existingProductIndex !== -1) {
+    // If a product with the same ID already exists, update its quantity
+    const updatedBasket = basketList.map((product, index) => {
+      if (index === existingProductIndex) {
+        // Create a copy of the existing product and update its quantity
+        const updatedProduct = { ...product };
+        updatedProduct.quantity += 1;
+        return updatedProduct;
+      }
+      return product;
+    });
     setBasketList(updatedBasket);
     dispatch(addProducts(updatedBasket));
+    console.log(basketList)
+    debugger
+
+  } else {
+    // If no product with the same ID exists, add a new product with quantity 1
+    const updatedBasket = [...basketList, { image, price, id, discount, quantity: 1 }];
+    setBasketList(updatedBasket);
+    dispatch(addProducts(updatedBasket));
+  }
+
+    // const updatedBasket = [...basketList, { image, price, id, discount }];
+    // setBasketList(updatedBasket);
   };
 
-  const onDelete = (index) => {
+  const onDelete = (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this product?"
-    );
-    if (confirmDelete) {
-      const updatedBasket = [...basketList];
-      updatedBasket.splice(index, 1);
-      setBasketList(updatedBasket);
+      );
+      if (confirmDelete) {
+        const updatedBasket =  [...basketList].filter(item => item.id !== id);
+        setBasketList(updatedBasket);
       dispatch(addProducts(updatedBasket));
     }
   };
@@ -82,6 +106,7 @@ const ProductsList = () => {
 
   const applyDiscount = (productPrice) => (productPrice * (1 - 0.2)).toFixed(2);
 
+
   return (
     <>
       {productList.length === 0 ? (
@@ -100,9 +125,11 @@ const ProductsList = () => {
           <span>Added products:</span>
           <ul className="basket">
             {userProducts?.map((product, index) => {
+              // debugger
               return (
-                <li key={index} className="basket-product">
-                  {index + 1}
+                <li key={product.id} className="basket-product">
+                  {/* {index + 1} */}
+                  {product.quantity}
                   <img
                     className="basket-img"
                     src={product.image}
@@ -114,7 +141,7 @@ const ProductsList = () => {
                   </p>
                   <FontAwesomeIcon
                     className="trash-icon"
-                    onClick={() => onDelete(index, product.price)}
+                    onClick={() => onDelete(product.id)}
                     icon={faTrash}
                   />
                 </li>
@@ -155,7 +182,7 @@ const ProductsList = () => {
                   <button
                     className="add-button"
                     onMouseEnter={() => setShowAddButton(index)}
-                    onClick={() => onAddProduct(product.image, product.price)}
+                    onClick={() => onAddProduct(product.image, product.price, product.id)}
                   >
                     Add to <FontAwesomeIcon icon={faShoppingBasket} />
                   </button>

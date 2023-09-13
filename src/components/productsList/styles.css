@@ -240,6 +240,10 @@
     display: none;
   }
 
+  .no-discount~.add-button{
+    margin-top:-75px;
+  }
+
   .discount{
     display: block;
     color:#3cff00;
