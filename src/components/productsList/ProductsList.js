@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addProducts } from "../../features/user";
+import { logout, buyProduct, addProducts } from "../../features/user";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
+import { Basket } from "./Basket";
 import "./styles.css";
-import {Basket} from "./Basket";
 
 const ProductsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const registrationToken = localStorage.getItem("registrationToken");
+  const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
   const { user, userProducts, totalPrice } = useSelector((state) => ({
     user: state.user?.value,
@@ -22,14 +22,14 @@ const ProductsList = () => {
   const [productList, setProductList] = useState([]);
   const [showAddButton, setShowAddButton] = useState(null);
   const [basketList, setBasketList] = useState(userProducts);
-  const [isBasket, setIsBaskt] = useState(false);
-  const basketContainerRef = useRef(null);
+  const [isBasket, setIsBaskt] = useState(basketList.length===0 ? false : true);
   const discount = existingData[userId]?.discount;
+  // debugger
 
-  // useEffect(() => {
-  //   const token = JSON.parse(registrationToken);
-  //   Date.now() > token?.expiresAt | !token && navigate("/");
-  // });
+  useEffect(() => {
+    const token = JSON.parse(registrationToken);
+    Date.now() > token?.expiresAt | !token && dispatch(logout()); 
+  });
 
   useEffect(() => {
     (async () => {
@@ -49,7 +49,7 @@ const ProductsList = () => {
     const existingProductIndex = basketList.findIndex(
       (product) => product.id === id
     );
-   
+
     if (existingProductIndex !== -1) {
       const updatedBasket = basketList.map((product, index) => {
         if (index === existingProductIndex) {
@@ -61,8 +61,6 @@ const ProductsList = () => {
       });
       setBasketList(updatedBasket);
       dispatch(addProducts(updatedBasket));
-      console.log(basketList);
-      debugger;
     } else {
       const updatedBasket = [
         ...basketList,
@@ -72,6 +70,11 @@ const ProductsList = () => {
       dispatch(addProducts(updatedBasket));
     }
   };
+
+  const onBuyNow =(image, price, id)=>{
+    dispatch(buyProduct({ image, price, id, discount, quantity: 1 }));
+    navigate('/finish-order')
+  }
 
   const onDelete = (id) => {
     const confirmDelete = window.confirm(
@@ -83,25 +86,6 @@ const ProductsList = () => {
       dispatch(addProducts(updatedBasket));
     }
   };
-
-  useEffect(() => {
-    if (basketContainerRef.current) {
-      const targetScroll = basketContainerRef.current.scrollHeight;
-      const currentScroll = basketContainerRef.current.scrollTop;
-      let startTime = null;
-
-      const animateScroll = (timestamp) => {
-        if (!startTime) startTime = timestamp;
-        const progress = (timestamp - startTime) / 600;
-        basketContainerRef.current.scrollTop =
-          currentScroll + (targetScroll - currentScroll) * progress;
-
-        progress < 1 && requestAnimationFrame(animateScroll);
-      };
-      requestAnimationFrame(animateScroll);
-    }
-  }, [userProducts]);
-
   const applyDiscount = (productPrice) => (productPrice * (1 - 0.2)).toFixed(2);
 
   return (
@@ -152,15 +136,26 @@ const ProductsList = () => {
                 </div>
 
                 {showAddButton === index && (
-                  <button
-                    className="add-button"
-                    onMouseEnter={() => setShowAddButton(index)}
-                    onClick={() =>
-                      onAddProduct(product.image, product.price, product.id)
-                    }
-                  >
-                    Add to <FontAwesomeIcon icon={faShoppingBasket} />
-                  </button>
+                  <>
+                    <button
+                      className="add-button"
+                      onMouseEnter={() => setShowAddButton(index)}
+                      onClick={() =>
+                        onAddProduct(product.image, product.price, product.id)
+                      }
+                    >
+                      Add to <FontAwesomeIcon icon={faShoppingBasket} />
+                    </button>
+                    <button
+                      className="buy-now-btn"
+                      onMouseEnter={() => setShowAddButton(index)}
+                      onClick={() =>
+                        onBuyNow(product.image, product.price, product.id)
+                      }
+                    >
+                      Buy now
+                    </button>
+                  </>
                 )}
               </div>
             );

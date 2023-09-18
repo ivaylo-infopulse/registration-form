@@ -7,6 +7,7 @@ import { Register } from './components/registration/Register'
 import ForgetPassword from './components/forgetPassword/ForgetPassword'
 import ProductsList from './components/productsList/ProductsList'
 import TheGame from './components/sudokuGame/TheGame'
+import FinishOrder from './components/finishOrder/FinishOrder'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
           <Route path='/' element={<Login/>}/>
           <Route path='/profile' element={<Profile/>}/>
           <Route path='/products-list' element={<ProductsList/>}/>
+          <Route path='/finish-order' element={<FinishOrder/>}/>
           <Route path='/sudoku-game' element={<TheGame/>}/>
         </Routes>
       </div>
