@@ -1,34 +1,51 @@
-import React, { useState } from "react";
-import { addProducts, buyProduct } from "../../features/user";
+import React, { useState, useEffect } from "react";
+import { addProducts, buyProduct, logout } from "../../features/user";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Basket, applyDiscount } from "../productsList/Basket";
 import "./styles.css";
-import { Basket } from "../productsList/Basket";
 
 const FinishOrder = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
   const [country, setCountry] = useState();
   const [city, setCity] = useState("");
   const [street, setStreet] = useState("");
   const [phone, setPhone] = useState("");
-  const { user, totalPrice, productPrice, products, product } = useSelector(
+  const { user, products, totalPrice, product, productPrice } = useSelector(
     (state) => ({
       user: state.user?.value,
       products: state.user?.basket,
-      product: state.user?.productToBuy,
       totalPrice: parseFloat(state.user.totalPrice).toFixed(2),
-      productPrice:
-        state.user.productPrice && state.user.productPrice.toFixed(2),
+      product: state.user?.productToBuy,
+      productPrice: state.user?.productToBuy?.discount
+        ? applyDiscount(state.user?.productToBuy?.price)
+        : state.user?.productToBuy?.price,
     })
   );
-  const [basketList, setBasketList] = useState(products);
   const userId = existingData.findIndex((data) => data?.name === user?.name);
-  const discount = existingData[userId]?.discount;
+  const [discount, setDiscount] = useState(existingData[userId]?.discount);
 
-  // debugger;
-  const handleSubmit = () => {
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      const token = JSON.parse(registrationToken);
+      const isExpired = Date.now() > token?.expiresAt;
+      if (isExpired && discount) {
+        setDiscount(false);
+        dispatch(logout());
+        dispatch(addProducts([]));
+        product && dispatch(buyProduct({ ...product, discount: 0 }));
+        alert("You session expired. Please login to use your discount");
+      }
+    };
+    const checkInterval = setInterval(checkTokenExpiration, 100);
+    return () => clearInterval(checkInterval);
+  }, [discount, dispatch, product, registrationToken]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
     alert(
       `Your order const is ${
         productPrice || totalPrice
@@ -38,42 +55,24 @@ const FinishOrder = () => {
     navigate("/products-list");
   };
 
-  const onGoBack = () => {
+  const onGoBack = (e) => {
+    e.preventDefault();
     dispatch(buyProduct());
     navigate("/products-list");
   };
 
-  const onDelete = (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
-    if (confirmDelete) {
-        const updatedBasket = [...basketList].filter((item) => item.id !== id);
-        setBasketList(updatedBasket);
-        dispatch(addProducts(updatedBasket));  
-    }
-  };
-
-  const applyDiscount = (productPrice) => (productPrice * (1 - 0.2)).toFixed(2);
-
   return (
     <div className="order-wrapper">
       {!productPrice ? (
-        <Basket
-          userProducts={products}
-          onDelete={onDelete}
-          totalPrice={totalPrice}
-          discount={discount}
-          applyDiscount={applyDiscount}
-        />
+        <Basket userProducts={products} discount={discount} />
       ) : (
         <div className="item-wrapper">
-            <div className="selected-item">Selected item</div>
-            <img className="basket-img" src={product.image} alt="product pic" />
-            <label className="cost-price">
-              Price {discount ? applyDiscount(product.price) : product.price} $
-            </label>
-          </div>
+          <div className="selected-item">Selected item</div>
+          <img className="basket-img" src={product.image} alt="product pic" />
+          <label className="cost-price">
+            Price {discount ? applyDiscount(product.price) : product.price} $
+          </label>
+        </div>
       )}
       <form onSubmit={handleSubmit}>
         <label htmlFor="country">Country:</label>
@@ -109,7 +108,7 @@ const FinishOrder = () => {
         <input type="text" value={`${productPrice || totalPrice} $`} disabled />
         <div className="btn-wrapper">
           <button type="submit">Submit</button>
-          <button onClick={() => onGoBack()}>Go back</button>
+          <button onClick={onGoBack}>Go back</button>
         </div>
       </form>
     </div>

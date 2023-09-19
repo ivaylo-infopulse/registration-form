@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
-import { Basket } from "./Basket";
+import { Basket, applyDiscount } from "./Basket";
 import "./styles.css";
 
 const ProductsList = () => {
@@ -13,23 +13,30 @@ const ProductsList = () => {
   const navigate = useNavigate();
   const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
-  const { user, userProducts, totalPrice } = useSelector((state) => ({
+  const { user, userProducts } = useSelector((state) => ({
     user: state.user?.value,
     userProducts: state.user?.basket,
-    totalPrice: parseFloat(state.user.totalPrice).toFixed(2),
   }));
   const userId = existingData.findIndex((data) => data?.name === user?.name);
   const [productList, setProductList] = useState([]);
   const [showAddButton, setShowAddButton] = useState(null);
-  const [basketList, setBasketList] = useState(userProducts);
-  const [isBasket, setIsBaskt] = useState(basketList.length===0 ? false : true);
-  const discount = existingData[userId]?.discount;
-  // debugger
-
+  const [isBasket, setIsBaskt] = useState(userProducts.length===0 ? false : true);
+  const [discount, setDiscount] = useState(existingData[userId]?.discount);
+  
   useEffect(() => {
+  const checkTokenExpiration = () => {
     const token = JSON.parse(registrationToken);
-    Date.now() > token?.expiresAt | !token && dispatch(logout()); 
-  });
+    const isExpired = Date.now() > token?.expiresAt;
+    if (isExpired && discount) {
+      setDiscount(false)
+      dispatch(logout())
+      dispatch(addProducts([]))
+      alert('You session expired. Please login to use your discount')
+    }
+  };
+  const checkInterval = setInterval(checkTokenExpiration, 100);
+  return () => clearInterval(checkInterval);
+},[discount, dispatch, registrationToken])
 
   useEffect(() => {
     (async () => {
@@ -45,13 +52,12 @@ const ProductsList = () => {
   const onAddProduct = (image, price, id) => {
     setIsBaskt(true);
     window.scrollTo(0, 10);
-
-    const existingProductIndex = basketList.findIndex(
+    const existingProductIndex = userProducts.findIndex(
       (product) => product.id === id
     );
 
     if (existingProductIndex !== -1) {
-      const updatedBasket = basketList.map((product, index) => {
+      const updatedBasket = userProducts.map((product, index) => {
         if (index === existingProductIndex) {
           const updatedProduct = { ...product };
           updatedProduct.quantity += 1;
@@ -59,34 +65,23 @@ const ProductsList = () => {
         }
         return product;
       });
-      setBasketList(updatedBasket);
       dispatch(addProducts(updatedBasket));
     } else {
       const updatedBasket = [
-        ...basketList,
+        ...userProducts,
         { image, price, id, discount, quantity: 1 },
       ];
-      setBasketList(updatedBasket);
       dispatch(addProducts(updatedBasket));
     }
   };
 
   const onBuyNow =(image, price, id)=>{
-    dispatch(buyProduct({ image, price, id, discount, quantity: 1 }));
+    dispatch(buyProduct({ image, price, id, discount }));
     navigate('/finish-order')
   }
 
-  const onDelete = (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
-    if (confirmDelete) {
-      const updatedBasket = [...basketList].filter((item) => item.id !== id);
-      setBasketList(updatedBasket);
-      dispatch(addProducts(updatedBasket));
-    }
-  };
-  const applyDiscount = (productPrice) => (productPrice * (1 - 0.2)).toFixed(2);
+  
+
 
   return (
     <>
@@ -105,9 +100,6 @@ const ProductsList = () => {
         <Basket
           discount={discount}
           userProducts={userProducts}
-          onDelete={onDelete}
-          totalPrice={totalPrice}
-          applyDiscount={applyDiscount}
         />
       )}
 

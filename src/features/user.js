@@ -22,7 +22,6 @@ const userSlice = createSlice({
     value: initialData,
     basket: initialProducts,
     productToBuy: {},
-    productPrice: "",
     totalPrice: "",
   },
   reducers: {
@@ -36,27 +35,19 @@ const userSlice = createSlice({
 
     addProducts: (state, action) => {
       state.basket = [...action.payload];
-      const isDiscount = state.basket.some((item) => item.discount);
-      state.totalPrice = state.basket
-        .map((prop) =>
-          isDiscount
-            ? prop.quantity * prop.price * (1 - 0.2)
-            : prop.price * prop.quantity
-        )
-        .reduce((partialSum, a) => partialSum + a, 0);
+    },
+
+    totalCost: (state, action) =>{
+      state.totalPrice = action.payload
     },
 
     buyProduct: (state, action) => {
       state.productToBuy = action.payload;
-      const isDiscount = state.productToBuy?.discount;
-      state.productPrice = isDiscount
-        ? state.productToBuy.price * (1 - 0.2)
-        : state.productToBuy?.price;
     },
   },
 });
 
-export const { login, logout, addProducts, buyProduct } = userSlice.actions;
+export const { login, logout, addProducts, totalCost, buyProduct } = userSlice.actions;
 
 const persistConfig = {
   key: "root",
