@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { addProducts, totalCost } from "../../features/user";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,8 +16,7 @@ export const Basket = ({ discount, userProducts }) => {
   const basketContainerRef = useRef(null);
   const isOrderBtn = location.pathname === "/products-list";
   const registrationToken = localStorage.getItem("registrationToken");
-  const [dis, setDiscount] = useState(true);
-
+  
   const onDelete = (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this product?"
@@ -31,15 +30,15 @@ export const Basket = ({ discount, userProducts }) => {
   const totalPrice = useCallback(() => {
     const totalPrice = userProducts
       .map((prop) =>
-        prop.discount && dis
-          ? prop.quantity * prop.price * (1 - 0.2)
+        discount
+          ? prop.quantity * applyDiscount(prop.price)
           : prop.price * prop.quantity
       )
       .reduce((partialSum, a) => partialSum + a, 0)
       .toFixed(2);
     dispatch(totalCost(totalPrice));
     return totalPrice;
-  }, [dis, dispatch, userProducts]);
+  }, [discount, dispatch, userProducts]);
 
   useEffect(() => {
     if (basketContainerRef.current) {
@@ -63,14 +62,13 @@ export const Basket = ({ discount, userProducts }) => {
     const checkTokenExpiration = () => {
       const token = JSON.parse(registrationToken);
       const isExpired = Date.now() > token?.expiresAt;
-      if (isExpired && dis) {
-        setDiscount(false);
+      if (isExpired && discount) {
         totalPrice();
       }
     };
     const checkInterval = setInterval(checkTokenExpiration, 100);
     return () => clearInterval(checkInterval);
-  }, [dis, discount, registrationToken, totalPrice]);
+  }, [discount, registrationToken, totalPrice]);
 
   return (
     <div className="basket-container" ref={basketContainerRef}>

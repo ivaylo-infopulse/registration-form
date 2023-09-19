@@ -20,23 +20,23 @@ const ProductsList = () => {
   const userId = existingData.findIndex((data) => data?.name === user?.name);
   const [productList, setProductList] = useState([]);
   const [showAddButton, setShowAddButton] = useState(null);
-  const [isBasket, setIsBaskt] = useState(userProducts.length===0 ? false : true);
+  const [isBasket, setIsBaskt] = useState(userProducts.length === 0 ? false : true);
   const [discount, setDiscount] = useState(existingData[userId]?.discount);
-  
+
   useEffect(() => {
-  const checkTokenExpiration = () => {
-    const token = JSON.parse(registrationToken);
-    const isExpired = Date.now() > token?.expiresAt;
-    if (isExpired && discount) {
-      setDiscount(false)
-      dispatch(logout())
-      dispatch(addProducts([]))
-      alert('You session expired. Please login to use your discount')
-    }
-  };
-  const checkInterval = setInterval(checkTokenExpiration, 100);
-  return () => clearInterval(checkInterval);
-},[discount, dispatch, registrationToken])
+    const checkTokenExpiration = () => {
+      const token = JSON.parse(registrationToken);
+      const isExpired = Date.now() > token?.expiresAt;
+      if (isExpired && discount) {
+        setDiscount(false);
+        dispatch(logout());
+        dispatch(addProducts([]));
+        alert("You session expired. Please login to use your discount");
+      }
+    };
+    const checkInterval = setInterval(checkTokenExpiration, 100);
+    return () => clearInterval(checkInterval);
+  }, [discount, dispatch, registrationToken]);
 
   useEffect(() => {
     (async () => {
@@ -52,36 +52,24 @@ const ProductsList = () => {
   const onAddProduct = (image, price, id) => {
     setIsBaskt(true);
     window.scrollTo(0, 10);
-    const existingProductIndex = userProducts.findIndex(
-      (product) => product.id === id
-    );
-
-    if (existingProductIndex !== -1) {
-      const updatedBasket = userProducts.map((product, index) => {
-        if (index === existingProductIndex) {
-          const updatedProduct = { ...product };
-          updatedProduct.quantity += 1;
-          return updatedProduct;
-        }
-        return product;
-      });
+    const existingProduct = userProducts.find((product) => product.id === id);
+    if (existingProduct) {
+      const updatedBasket = userProducts.map((product) =>
+        product.id === id
+          ? { ...product, quantity: product.quantity + 1 }
+          : product
+      );
       dispatch(addProducts(updatedBasket));
     } else {
-      const updatedBasket = [
-        ...userProducts,
-        { image, price, id, discount, quantity: 1 },
-      ];
-      dispatch(addProducts(updatedBasket));
+      const newProduct = { image, price, id, discount, quantity: 1 };
+      dispatch(addProducts([...userProducts, newProduct]));
     }
   };
 
-  const onBuyNow =(image, price, id)=>{
+  const onBuyNow = (image, price, id) => {
     dispatch(buyProduct({ image, price, id, discount }));
-    navigate('/finish-order')
-  }
-
-  
-
+    navigate("/finish-order");
+  };
 
   return (
     <>
@@ -96,12 +84,7 @@ const ProductsList = () => {
         </div>
       )}
 
-      {isBasket && (
-        <Basket
-          discount={discount}
-          userProducts={userProducts}
-        />
-      )}
+      {isBasket && <Basket discount={discount} userProducts={userProducts} />}
 
       <div className="product-list">
         <h1>Products List</h1>
