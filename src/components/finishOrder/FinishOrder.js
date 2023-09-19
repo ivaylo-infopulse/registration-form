@@ -10,23 +10,17 @@ const FinishOrder = () => {
   const dispatch = useDispatch();
   const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
-  const [country, setCountry] = useState();
+  const user = useSelector((state) => state.user?.value);
+  const userId = existingData.findIndex((data) => data?.name === user?.name);
+  const products = useSelector((state) => state.user?.basket);
+  const product = useSelector((state) => state.user?.productToBuy);
+  const totalPrice = parseFloat(useSelector((state) => state.user.totalPrice)).toFixed(2);
+  const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [street, setStreet] = useState("");
   const [phone, setPhone] = useState("");
-  const { user, products, totalPrice, product, productPrice } = useSelector(
-    (state) => ({
-      user: state.user?.value,
-      products: state.user?.basket,
-      totalPrice: parseFloat(state.user.totalPrice).toFixed(2),
-      product: state.user?.productToBuy,
-      productPrice: state.user?.productToBuy?.discount
-        ? applyDiscount(state.user?.productToBuy?.price)
-        : state.user?.productToBuy?.price,
-    })
-  );
-  const userId = existingData.findIndex((data) => data?.name === user?.name);
   const [discount, setDiscount] = useState(existingData[userId]?.discount);
+  const isItemDiscount = product?.discount ? applyDiscount(product?.price) : product?.price
 
   useEffect(() => {
     const checkTokenExpiration = () => {
@@ -48,10 +42,10 @@ const FinishOrder = () => {
     e.preventDefault();
     alert(
       `Your order const is ${
-        productPrice || totalPrice
+        isItemDiscount || totalPrice
       }$ and will be send to ${country}, ${city}, ${street}, with phone number: ${phone}`
     );
-    !productPrice ? dispatch(addProducts([])) : dispatch(buyProduct());
+    !product?.price ? dispatch(addProducts([])) : dispatch(buyProduct());
     navigate("/products-list");
   };
 
@@ -63,14 +57,14 @@ const FinishOrder = () => {
 
   return (
     <div className="order-wrapper">
-      {!productPrice ? (
+      {!product?.price ? (
         <Basket userProducts={products} discount={discount} />
       ) : (
         <div className="item-wrapper">
           <div className="selected-item">Selected item</div>
           <img className="basket-img" src={product.image} alt="product pic" />
           <label className="cost-price">
-            Price {discount ? applyDiscount(product.price) : product.price} $
+            Price {isItemDiscount} $
           </label>
         </div>
       )}
@@ -105,7 +99,7 @@ const FinishOrder = () => {
           required
         />
         <label>Total amount to pay:</label>
-        <input type="text" value={`${productPrice || totalPrice} $`} disabled />
+        <input type="text" value={`${isItemDiscount || totalPrice} $`} disabled />
         <div className="btn-wrapper">
           <button type="submit">Submit</button>
           <button onClick={onGoBack}>Go back</button>
