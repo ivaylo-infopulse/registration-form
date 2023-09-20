@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, addProducts } from "../../features/user";
 import { timer } from "../../features/timer";
@@ -14,7 +15,7 @@ export const Profile = () => {
   const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
   const user = useSelector((state) => state.user?.value);
-  const userId = existingData.findIndex((data) => data.name === user?.name);
+  const { userId } = useParams();
   const [isList, setIsList] = useState(false);
   const [selectedImage, setSelectedImage] = useState(
     existingData[userId]?.image
@@ -25,8 +26,7 @@ export const Profile = () => {
   const [newPassConfirm, setNewPassConfirm] = useState();
   const [isPassMatch, setIsPassMatch] = useState();
   const [popUp, setPopUp] = useState(false);
-  const btnRef = useRef();
-
+  
   useEffect(() => {
     const token = JSON.parse(registrationToken);
     (Date.now() > token?.expiresAt) | !token && navigate("/");
@@ -178,7 +178,6 @@ export const Profile = () => {
                 onChange={(e) => {
                   setNewPass(e.target.value);
                 }}
-                ref={btnRef}
               />
               <input
                 type="password"
@@ -214,10 +213,10 @@ export const Profile = () => {
         Show List Of Users
       </button>
       {isList && <ListOfUsers />}
-      <button className="users-list" onClick={() => navigate("/products-list")}>
+      <button className="users-list" onClick={() => navigate(`/products-list/${userId}`)}>
         Go to products list
       </button>
-      <button className="sudoku-link" onClick={() => navigate("/sudoku-game")}>
+      <button className="sudoku-link" onClick={() => navigate(`/sudoku-game/${userId}`)}>
         Play Sudoku
       </button>
     </div>

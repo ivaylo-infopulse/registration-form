@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { randomSudoku } from "./GridGenerator";
@@ -10,7 +11,7 @@ const initialGrid = randomSudoku;
 const TheGame = () => {
   const navigate = useNavigate();
   const getTime = useSelector((state) => state.timer?.time);
-  const user = useSelector((state) => state.user?.value);
+  const {userId} = useParams()
   const registrationToken = localStorage.getItem("registrationToken");
   const [isStop, setIsStop] = useState(true);
   const [isSolved, setIsSolved] = useState(true);
@@ -161,7 +162,6 @@ const TheGame = () => {
 
   const getTimeScore = (theTime) => {
     const existingData = JSON.parse(localStorage.getItem("userData"));
-    const userId = existingData.findIndex((data) => data?.name === user?.name);
     const userTimeScore = existingData[userId]?.timeScore;
     // check for if user has time score and update for the best scored time
     if (
@@ -186,7 +186,7 @@ const TheGame = () => {
           <button ref={buttonRef} onClick={getTimeScore(getTime)} />
           <button
             className={isStop ? "" : "go-back-green"}
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate(`/profile/${userId}`)}
           >
             Go back
           </button>

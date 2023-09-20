@@ -3,8 +3,9 @@
   justify-content: space-around;
   width: 70%;
   border-radius: 10%;
-  box-shadow: 0px 0px 65px rgba(97, 135, 135, 0.676);
-  background-color: rgba(97, 135, 135, 0.295);
+  box-shadow: 0px 0px 65px rgb(194 163 94 / 31%);
+  background-color: rgb(255 223 104 / 10%);
+    
 
   & .item-wrapper {
     display: flex;
@@ -31,12 +32,12 @@
 
   & input {
     margin-bottom: 10px;
-    border: 1.5px solid rgba(0, 255, 191, 0.541);
+    border: 1.5px solid #cdb386;
   }
 
   & label {
     margin-bottom: 0px;
-    color: rgba(0, 255, 34, 0.927);
+    color:white;
     font-weight: bold;
   }
 
@@ -47,6 +48,7 @@
 }
 
 .basket-img {
+  border-radius: 8px;
   width: 200px;
   height: 200px;
 }

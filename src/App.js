@@ -18,10 +18,10 @@ function App() {
           <Route path='/register' element={<Register/>}/>
           <Route path='/forgetPassword' element={<ForgetPassword/>}/>
           <Route path='/' element={<Login/>}/>
-          <Route path='/profile' element={<Profile/>}/>
-          <Route path='/products-list' element={<ProductsList/>}/>
-          <Route path='/finish-order' element={<FinishOrder/>}/>
-          <Route path='/sudoku-game' element={<TheGame/>}/>
+          <Route path='/profile/:userId' element={<Profile/>}/>
+          <Route path='/products-list/:userId' element={<ProductsList/>}/>
+          <Route path='/finish-order/:userId' element={<FinishOrder/>}/>
+          <Route path='/sudoku-game/:userId' element={<TheGame/>}/>
         </Routes>
       </div>
    </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { addProducts, buyProduct, logout } from "../../features/user";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -10,8 +11,7 @@ const FinishOrder = () => {
   const dispatch = useDispatch();
   const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
-  const user = useSelector((state) => state.user?.value);
-  const userId = existingData.findIndex((data) => data?.name === user?.name);
+  const {userId} = useParams();
   const products = useSelector((state) => state.user?.basket);
   const product = useSelector((state) => state.user?.productToBuy);
   const totalPrice = parseFloat(useSelector((state) => state.user.totalPrice)).toFixed(2);
@@ -21,7 +21,7 @@ const FinishOrder = () => {
   const [phone, setPhone] = useState("");
   const [discount, setDiscount] = useState(existingData[userId]?.discount);
   const isItemDiscount = product?.discount ? applyDiscount(product?.price) : product?.price
-
+  
   useEffect(() => {
     const checkTokenExpiration = () => {
       const token = JSON.parse(registrationToken);
@@ -46,13 +46,13 @@ const FinishOrder = () => {
       }$ and will be send to ${country}, ${city}, ${street}, with phone number: ${phone}`
     );
     !product?.price ? dispatch(addProducts([])) : dispatch(buyProduct());
-    navigate("/products-list");
+    navigate(`/products-list/${userId}`);
   };
 
   const onGoBack = (e) => {
     e.preventDefault();
     dispatch(buyProduct());
-    navigate("/products-list");
+    navigate(`/products-list/${userId}`);
   };
 
   return (

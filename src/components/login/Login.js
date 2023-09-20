@@ -1,5 +1,6 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { login } from "../../features/user";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,7 +10,7 @@ import { Link } from "react-router-dom";
 export const arrData = JSON.parse(localStorage.getItem("userData") || "[]");
 
 export const Login = () => {
-  const buttonRef = useRef(null);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const {
@@ -32,8 +33,11 @@ export const Login = () => {
   };
 
   const onSubmit = async (data) => {
-    const isProfileExist = arrData?.find((user) => user.name === data.name);
-
+    let userId;
+    const isProfileExist = arrData?.find((user, index) => {
+      userId = index;
+      return user.name === data.name;
+    });
     if (isProfileExist) {
       const registrationToken = generateUniqueRegistrationToken();
       localStorage.setItem(
@@ -42,7 +46,7 @@ export const Login = () => {
       );
 
       dispatch(login(isProfileExist));
-      buttonRef.current.click();
+      navigate(`/profile/${userId}`);
     }
   };
 
@@ -67,7 +71,6 @@ export const Login = () => {
         <Link className="link" to={"/register"}>
           Go to Registration
         </Link>
-        <Link ref={buttonRef} to={"/profile"} />
       </form>
     </div>
   );

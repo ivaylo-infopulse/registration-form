@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, buyProduct, addProducts } from "../../features/user";
 import { useNavigate } from "react-router-dom";
@@ -13,11 +14,8 @@ const ProductsList = () => {
   const navigate = useNavigate();
   const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
-  const { user, userProducts } = useSelector((state) => ({
-    user: state.user?.value,
-    userProducts: state.user?.basket,
-  }));
-  const userId = existingData.findIndex((data) => data?.name === user?.name);
+  const userProducts  = useSelector((state) => state.user?.basket);
+  const {userId} = useParams()
   const [productList, setProductList] = useState([]);
   const [showAddButton, setShowAddButton] = useState(null);
   const [isBasket, setIsBaskt] = useState(userProducts.length === 0 ? false : true);
@@ -68,7 +66,7 @@ const ProductsList = () => {
 
   const onBuyNow = (image, price, id) => {
     dispatch(buyProduct({ image, price, id, discount }));
-    navigate("/finish-order");
+    navigate(`/finish-order/${userId}`);
   };
 
   return (
@@ -80,7 +78,7 @@ const ProductsList = () => {
           <button onClick={() => setIsBaskt(!isBasket)}>
             {!isBasket ? "Show basket" : "Hide basket"}
           </button>
-          <button onClick={() => navigate("/profile")}>Back to profile</button>
+          <button onClick={() => navigate(`/profile/${userId}`)}>Back to profile</button>
         </div>
       )}
 

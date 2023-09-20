@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addProducts, totalCost } from "../../features/user";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,8 +14,9 @@ export const Basket = ({ discount, userProducts }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const {userId} = useParams()
   const basketContainerRef = useRef(null);
-  const isOrderBtn = location.pathname === "/products-list";
+  const isOrderBtn = location.pathname === `/products-list/${userId}`;
   const registrationToken = localStorage.getItem("registrationToken");
   
   const onDelete = (id) => {
@@ -71,6 +73,7 @@ export const Basket = ({ discount, userProducts }) => {
   }, [discount, registrationToken, totalPrice]);
 
   return (
+    <div className="basket-wrapper">
     <div className="basket-container" ref={basketContainerRef}>
       <span>Added products:</span>
 
@@ -87,7 +90,7 @@ export const Basket = ({ discount, userProducts }) => {
               className="trash-icon"
               onClick={() => onDelete(product.id)}
               icon={faTrash}
-            />
+              />
           </li>
         ))}
       </ul>
@@ -97,15 +100,16 @@ export const Basket = ({ discount, userProducts }) => {
           <>
             Total cost: ${totalPrice()} $
             {isOrderBtn && (
-              <button onClick={() => navigate("/finish-order")}>
+              <button onClick={() => navigate(`/finish-order/${userId}`)}>
                 finish order
               </button>
             )}
           </>
         ) : (
           "Basket is empty"
-        )}
+          )}
       </div>
+    </div>
     </div>
   );
 };
