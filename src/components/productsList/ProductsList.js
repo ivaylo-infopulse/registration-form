@@ -15,12 +15,12 @@ const ProductsList = () => {
   const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
   const userProducts  = useSelector((state) => state.user?.basket);
-  const {userId} = useParams()
+  let {userId} = useParams()
   const [productList, setProductList] = useState([]);
   const [showAddButton, setShowAddButton] = useState(null);
   const [isBasket, setIsBaskt] = useState(userProducts.length === 0 ? false : true);
-  const [discount, setDiscount] = useState(existingData[userId]?.discount);
-
+  const [discount, setDiscount] = useState();
+  
   useEffect(() => {
     const checkTokenExpiration = () => {
       const token = JSON.parse(registrationToken);
@@ -31,10 +31,11 @@ const ProductsList = () => {
         dispatch(addProducts([]));
         alert("You session expired. Please login to use your discount");
       }
+      !registrationToken ? setDiscount(null) : setDiscount(existingData[userId]?.discount)
     };
     const checkInterval = setInterval(checkTokenExpiration, 100);
     return () => clearInterval(checkInterval);
-  }, [discount, dispatch, registrationToken]);
+  }, [discount, dispatch, existingData, registrationToken, userId]);
 
   useEffect(() => {
     (async () => {

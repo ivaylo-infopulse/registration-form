@@ -22,6 +22,7 @@ function App() {
           <Route path='/products-list/:userId' element={<ProductsList/>}/>
           <Route path='/finish-order/:userId' element={<FinishOrder/>}/>
           <Route path='/sudoku-game/:userId' element={<TheGame/>}/>
+          <Route path='*' element={<Profile/>}/>
         </Routes>
       </div>
    </div>
