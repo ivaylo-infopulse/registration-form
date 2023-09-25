@@ -18,11 +18,11 @@ function App() {
           <Route path='/register' element={<Register/>}/>
           <Route path='/forgetPassword' element={<ForgetPassword/>}/>
           <Route path='/' element={<Login/>}/>
-          <Route path='/profile/:userId' element={<Profile/>}/>
+          <Route path='/profile/:userId' element={<Profile/>} exact/>
           <Route path='/products-list/:userId' element={<ProductsList/>}/>
           <Route path='/finish-order/:userId' element={<FinishOrder/>}/>
           <Route path='/sudoku-game/:userId' element={<TheGame/>}/>
-          <Route path='*' element={<Profile/>}/>
+          <Route path='*' element={<h1 className='worng-url'>This URL don't exist.</h1>}/>
         </Routes>
       </div>
    </div>

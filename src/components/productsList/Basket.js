@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addProducts, totalCost } from "../../features/user";
@@ -14,47 +14,46 @@ export const Basket = ({ discount, userProducts }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const {userId} = useParams()
-  const [isDiscount, setIsDicount] = useState();
+  const { userId } = useParams();
   const basketContainerRef = useRef(null);
   const isOrderBtn = location.pathname === `/products-list/${userId}`;
   const registrationToken = localStorage.getItem("registrationToken");
-  
+
   const onDelete = (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this product?"
-      );
-      if (confirmDelete) {
-        const updatedBasket = userProducts.filter((item) => item.id !== id);
+    );
+    if (confirmDelete) {
+      const updatedBasket = userProducts.filter((item) => item.id !== id);
       dispatch(addProducts(updatedBasket));
     }
   };
-  
-  const totalPrice = useCallback(() => {
+
+  const totalPrice = useMemo(() => {
     const totalPrice = userProducts
-    .map((prop) =>
-    isDiscount
-    ? prop.quantity * applyDiscount(prop.price)
-    : prop.price * prop.quantity
-    )
-    .reduce((partialSum, a) => partialSum + a, 0)
+      .map((prop) =>
+        discount
+          ? prop.quantity * applyDiscount(prop.price)
+          : prop.price * prop.quantity
+      )
+      .reduce((partialSum, a) => partialSum + a, 0)
       .toFixed(2);
     dispatch(totalCost(totalPrice));
     return totalPrice;
-  }, [isDiscount, dispatch, userProducts]);
-  
+  }, [discount, dispatch, userProducts]);
+
   useEffect(() => {
     if (basketContainerRef.current) {
       const targetScroll = basketContainerRef.current.scrollHeight;
       const currentScroll = basketContainerRef.current.scrollTop;
       let startTime = null;
-      
+
       const animateScroll = (timestamp) => {
         if (!startTime) startTime = timestamp;
-        
+
         const progress = (timestamp - startTime) / 600;
         basketContainerRef.current.scrollTop =
-        currentScroll + (targetScroll - currentScroll) * progress;
+          currentScroll + (targetScroll - currentScroll) * progress;
         progress < 1 && requestAnimationFrame(animateScroll);
       };
       requestAnimationFrame(animateScroll);
@@ -65,53 +64,57 @@ export const Basket = ({ discount, userProducts }) => {
     const checkTokenExpiration = () => {
       const token = JSON.parse(registrationToken);
       const isExpired = Date.now() > token?.expiresAt;
-      if (isExpired && isDiscount) {
-        totalPrice();
+      if (isExpired && discount) {
+        return totalPrice;
       }
-      !registrationToken ? setIsDicount(null) : setIsDicount(true)
     };
     const checkInterval = setInterval(checkTokenExpiration, 100);
     return () => clearInterval(checkInterval);
-  }, [isDiscount, registrationToken, totalPrice]);
+  }, [discount, registrationToken, totalPrice]);
+
 
   return (
     <div className="basket-wrapper">
-    <div className="basket-container" ref={basketContainerRef}>
-      <span>Added products:</span>
+      <div className="basket-container" ref={basketContainerRef}>
+        <span>Added products:</span>
 
-      <ul className="basket">
-        {userProducts?.map((product) => (
-          <li key={product.id} className="basket-product">
-            {product.quantity}
-            <img className="basket-img" src={product.image} alt="product pic" />
-            <p className="cost-price">
-              Price {isDiscount ? applyDiscount(product.price) : product.price} $
-            </p>
-
-            <FontAwesomeIcon
-              className="trash-icon"
-              onClick={() => onDelete(product.id)}
-              icon={faTrash}
+        <ul className="basket">
+          {userProducts?.map((product) => (
+            <li key={product.id} className="basket-product">
+              {product.quantity}
+              <img
+                className="basket-img"
+                src={product.image}
+                alt="product pic"
               />
-          </li>
-        ))}
-      </ul>
+              <p className="cost-price">
+                Price {discount ? applyDiscount(product.price) : product.price} $
+              </p>
 
-      <div className="total-cost">
-        {totalPrice() > 0 ? (
-          <>
-            Total cost: ${totalPrice()} $
-            {isOrderBtn && (
-              <button onClick={() => navigate(`/finish-order/${userId}`)}>
-                finish order
-              </button>
-            )}
-          </>
-        ) : (
-          "Basket is empty"
+              <FontAwesomeIcon
+                className="trash-icon"
+                onClick={() => onDelete(product.id)}
+                icon={faTrash}
+              />
+            </li>
+          ))}
+        </ul>
+
+        <div className="total-cost">
+          {totalPrice > 0 ? (
+            <>
+              Total cost: ${totalPrice} $
+              {isOrderBtn && (
+                <button onClick={() => navigate(`/finish-order/${userId}`)}>
+                  finish order
+                </button>
+              )}
+            </>
+          ) : (
+            "Basket is empty"
           )}
+        </div>
       </div>
-    </div>
     </div>
   );
 };

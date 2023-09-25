@@ -10,8 +10,8 @@ const FinishOrder = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const registrationToken = localStorage.getItem("registrationToken");
-  const existingData = JSON.parse(localStorage.getItem("userData"));
   const {userId} = useParams();
+  const user = useSelector((state)=> state.user?.value)
   const products = useSelector((state) => state.user?.basket);
   const product = useSelector((state) => state.user?.productToBuy);
   const totalPrice = parseFloat(useSelector((state) => state.user.totalPrice)).toFixed(2);
@@ -19,7 +19,7 @@ const FinishOrder = () => {
   const [city, setCity] = useState("");
   const [street, setStreet] = useState("");
   const [phone, setPhone] = useState("");
-  const [discount, setDiscount] = useState(existingData[userId]?.discount);
+  const [discount, setDiscount] = useState(user?.discount);
   const isItemDiscount = product?.discount ? applyDiscount(product?.price) : product?.price
   
   useEffect(() => {

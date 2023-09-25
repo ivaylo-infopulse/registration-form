@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, buyProduct, addProducts } from "../../features/user";
@@ -13,13 +13,16 @@ const ProductsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const registrationToken = localStorage.getItem("registrationToken");
-  const existingData = JSON.parse(localStorage.getItem("userData"));
-  const userProducts  = useSelector((state) => state.user?.basket);
-  let {userId} = useParams()
+  const userProducts = useSelector((state) => state.user?.basket);
+  const user = useSelector((state) => state.user.value);
+  let { userId } = useParams();
   const [productList, setProductList] = useState([]);
   const [showAddButton, setShowAddButton] = useState(null);
-  const [isBasket, setIsBaskt] = useState(userProducts.length === 0 ? false : true);
-  const [discount, setDiscount] = useState();
+  const [isBasket, setIsBaskt] = useState(
+    userProducts.length === 0 ? false : true
+  );
+  const [discount, setDiscount] = useState(user?.discount);
+
   
   useEffect(() => {
     const checkTokenExpiration = () => {
@@ -31,11 +34,10 @@ const ProductsList = () => {
         dispatch(addProducts([]));
         alert("You session expired. Please login to use your discount");
       }
-      !registrationToken ? setDiscount(null) : setDiscount(existingData[userId]?.discount)
     };
     const checkInterval = setInterval(checkTokenExpiration, 100);
     return () => clearInterval(checkInterval);
-  }, [discount, dispatch, existingData, registrationToken, userId]);
+  }, [discount, dispatch, registrationToken, user]);
 
   useEffect(() => {
     (async () => {
@@ -70,6 +72,7 @@ const ProductsList = () => {
     navigate(`/finish-order/${userId}`);
   };
 
+
   return (
     <>
       {productList.length === 0 ? (
@@ -79,7 +82,9 @@ const ProductsList = () => {
           <button onClick={() => setIsBaskt(!isBasket)}>
             {!isBasket ? "Show basket" : "Hide basket"}
           </button>
-          <button onClick={() => navigate(`/profile/${userId}`)}>Back to profile</button>
+          <button onClick={() => navigate(`/profile/${userId}`)}>
+            Back to profile
+          </button>
         </div>
       )}
 
@@ -88,52 +93,54 @@ const ProductsList = () => {
       <div className="product-list">
         <h1>Products List</h1>
         <div className="products-list-wrapper">
-          {productList.slice(0, 15).map((product, index) => {
-            return (
-              <div className="products-list" key={product.id}>
-                <img
-                  className="product-img"
-                  src={product.image}
-                  alt={product.title}
-                  onMouseEnter={() => setShowAddButton(index)}
-                  onMouseLeave={() => setShowAddButton(null)}
-                />
-                <div className="product-price">
-                  Price:
-                  <span className={discount && "add-discount"}>
-                    {product.price}
-                  </span>
-                  $
-                </div>
-                <div className={discount ? "discount" : "no-discount"}>
-                  {applyDiscount(product.price)} $
-                </div>
+          {useMemo(() => productList.slice(0, 15), [productList]).map(
+            (product, index) => {
+              return (
+                <div className="products-list" key={product.id}>
+                  <img
+                    className="product-img"
+                    src={product.image}
+                    alt={product.title}
+                    onMouseEnter={() => setShowAddButton(index)}
+                    onMouseLeave={() => setShowAddButton(null)}
+                  />
+                  <div className="product-price">
+                    Price:
+                    <span className={discount && "add-discount"}>
+                      {product.price}
+                    </span>
+                    $
+                  </div>
+                  <div className={discount ? "discount" : "no-discount"}>
+                    {applyDiscount(product.price)} $
+                  </div>
 
-                {showAddButton === index && (
-                  <>
-                    <button
-                      className="add-button"
-                      onMouseEnter={() => setShowAddButton(index)}
-                      onClick={() =>
-                        onAddProduct(product.image, product.price, product.id)
-                      }
-                    >
-                      Add to <FontAwesomeIcon icon={faShoppingBasket} />
-                    </button>
-                    <button
-                      className="buy-now-btn"
-                      onMouseEnter={() => setShowAddButton(index)}
-                      onClick={() =>
-                        onBuyNow(product.image, product.price, product.id)
-                      }
-                    >
-                      Buy now
-                    </button>
-                  </>
-                )}
-              </div>
-            );
-          })}
+                  {showAddButton === index && (
+                    <>
+                      <button
+                        className="add-button"
+                        onMouseEnter={() => setShowAddButton(index)}
+                        onClick={() =>
+                          onAddProduct(product.image, product.price, product.id)
+                        }
+                      >
+                        Add to <FontAwesomeIcon icon={faShoppingBasket} />
+                      </button>
+                      <button
+                        className="buy-now-btn"
+                        onMouseEnter={() => setShowAddButton(index)}
+                        onClick={() =>
+                          onBuyNow(product.image, product.price, product.id)
+                        }
+                      >
+                        Buy now
+                      </button>
+                    </>
+                  )}
+                </div>
+              );
+            }
+          )}
         </div>
       </div>
     </>
