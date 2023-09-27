@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useRef, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addProducts, totalCost } from "../../features/user";
@@ -19,15 +19,17 @@ export const Basket = ({ discount, userProducts }) => {
   const isOrderBtn = location.pathname === `/products-list/${userId}`;
   const registrationToken = localStorage.getItem("registrationToken");
 
-  const onDelete = (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
-    if (confirmDelete) {
-      const updatedBasket = userProducts.filter((item) => item.id !== id);
-      dispatch(addProducts(updatedBasket));
-    }
-  };
+  const onDelete = useCallback((id) => {
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this product?"
+      );
+      if (confirmDelete) {
+        const updatedBasket = userProducts.filter((item) => item.id !== id);
+        dispatch(addProducts(updatedBasket));
+      }
+    },
+    [userProducts, dispatch]
+  );
 
   const totalPrice = useMemo(() => {
     const totalPrice = userProducts
@@ -72,7 +74,6 @@ export const Basket = ({ discount, userProducts }) => {
     return () => clearInterval(checkInterval);
   }, [discount, registrationToken, totalPrice]);
 
-
   return (
     <div className="basket-wrapper">
       <div className="basket-container" ref={basketContainerRef}>
@@ -88,7 +89,8 @@ export const Basket = ({ discount, userProducts }) => {
                 alt="product pic"
               />
               <p className="cost-price">
-                Price {discount ? applyDiscount(product.price) : product.price} $
+                Price {discount ? applyDiscount(product.price) : product.price}{" "}
+                $
               </p>
 
               <FontAwesomeIcon
