@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, buyProduct, addProducts } from "../../features/user";
+import {
+  logout,
+  buyProduct,
+  addProducts,
+  deleteProducts,
+} from "../../features/user";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -30,7 +35,7 @@ const ProductsList = () => {
       if (isExpired && discount) {
         setDiscount(false);
         dispatch(logout());
-        dispatch(addProducts([]));
+        dispatch(deleteProducts([]));
         alert("You session expired. Please login to use your discount");
       }
     };
@@ -52,18 +57,7 @@ const ProductsList = () => {
   const onAddProducts = (image, price, id) => {
     setIsBaskt(true);
     window.scrollTo(0, 10);
-    const existingProduct = userProducts.find((product) => product.id === id);
-    if (existingProduct) {
-      const updatedBasket = userProducts.map((product) =>
-        product.id === id
-          ? { ...product, quantity: product.quantity + 1 }
-          : product
-      );
-      dispatch(addProducts(updatedBasket));
-    } else {
-      const newProduct = { image, price, id, discount, quantity: 1 };
-      dispatch(addProducts([...userProducts, newProduct]));
-    }
+    dispatch(addProducts([{ image, price, id }]));
   };
 
   const onBuyNow = (image, price, id) => {

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, addProducts } from "../../features/user";
+import { logout, deleteProducts } from "../../features/user";
 import { timer } from "../../features/timer";
 import { useNavigate } from "react-router-dom";
 import { DeleteAcc } from "../deleteAccount/DeleteAcc";
@@ -35,7 +35,7 @@ export const Profile = () => {
   const onLogOut = () => {
     dispatch(logout());
     dispatch(timer());
-    dispatch(addProducts([]));
+    dispatch(deleteProducts([]));
     navigate("/");
     localStorage.removeItem("registrationToken");
     window.location.reload();

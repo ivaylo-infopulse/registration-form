@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { addProducts, buyProduct, logout } from "../../features/user";
+import { deleteProducts, buyProduct, logout } from "../../features/user";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Basket, applyDiscount } from "../productsList/Basket";
@@ -33,7 +33,7 @@ const FinishOrder = () => {
       if (isExpired && discount) {
         setDiscount(false);
         dispatch(logout());
-        dispatch(addProducts([]));
+        dispatch(deleteProducts([]));
         product && dispatch(buyProduct({ ...product, discount: 0 }));
         alert("You session expired. Please login to use your discount");
       }
@@ -44,13 +44,18 @@ const FinishOrder = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(
-      `Your order const is ${
-        isItemDiscount || totalPrice
-      }$ and will be send to ${country}, ${city}, ${street}, with phone number: ${phone}`
-    );
-    !product?.price ? dispatch(addProducts([])) : dispatch(buyProduct());
-    navigate(`/products-list/${userId}`);
+    if (totalPrice > 0) {
+      alert(
+        `Your order const is ${
+          isItemDiscount || totalPrice
+        }$ and will be send to ${country}, ${city}, ${street}, with phone number: ${phone}`
+      );
+      !product?.price ? dispatch(deleteProducts([])) : dispatch(buyProduct());
+      navigate(`/products-list/${userId}`);
+    } else {
+      alert("Your basket is empty! Please add products.");
+      navigate(`/products-list/${userId}`);
+    }
   };
 
   const onGoBack = (e) => {

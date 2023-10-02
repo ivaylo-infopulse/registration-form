@@ -39,7 +39,19 @@ const userSlice = createSlice({
     },
 
     addProducts: (state, action) => {
-      state.basket = [...action.payload];
+      const productsToAdd = action.payload;
+      productsToAdd.forEach(({ image, price, id }) => {
+        const existingProduct = state.basket.find(
+          (product) => product.id === id
+        );
+        existingProduct
+          ? (existingProduct.quantity += 1)
+          : state.basket.push({ image, price, id, quantity: 1 });
+      });
+    },
+
+    deleteProducts: (state, action) => {
+      state.basket = action.payload;
     },
 
     totalCost: (state, action) => {
@@ -52,8 +64,14 @@ const userSlice = createSlice({
   },
 });
 
-export const { login, logout, addProducts, totalCost, buyProduct } =
-  userSlice.actions;
+export const {
+  login,
+  logout,
+  addProducts,
+  deleteProducts,
+  totalCost,
+  buyProduct,
+} = userSlice.actions;
 
 const persistConfig = {
   key: "root",

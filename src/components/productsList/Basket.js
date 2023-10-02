@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addProducts, totalCost } from "../../features/user";
+import { deleteProducts, totalCost } from "../../features/user";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router";
@@ -19,13 +19,14 @@ export const Basket = ({ discount, userProducts }) => {
   const isOrderBtn = location.pathname === `/products-list/${userId}`;
   const registrationToken = localStorage.getItem("registrationToken");
 
-  const onDelete = useCallback((id) => {
+  const onDelete = useCallback(
+    (id) => {
       const confirmDelete = window.confirm(
         "Are you sure you want to delete this product?"
       );
       if (confirmDelete) {
         const updatedBasket = userProducts.filter((item) => item.id !== id);
-        dispatch(addProducts(updatedBasket));
+        dispatch(deleteProducts(updatedBasket));
       }
     },
     [userProducts, dispatch]
