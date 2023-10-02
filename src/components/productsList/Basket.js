@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteProducts, totalCost } from "../../features/user";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +15,7 @@ export const Basket = ({ discount, userProducts }) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { userId } = useParams();
+  const total = useSelector((state) => state.user.totalPrice);
   const basketContainerRef = useRef(null);
   const isOrderBtn = location.pathname === `/products-list/${userId}`;
   const registrationToken = localStorage.getItem("registrationToken");
@@ -25,25 +26,16 @@ export const Basket = ({ discount, userProducts }) => {
         "Are you sure you want to delete this product?"
       );
       if (confirmDelete) {
-        const updatedBasket = userProducts.filter((item) => item.id !== id);
-        dispatch(deleteProducts(updatedBasket));
+        dispatch(deleteProducts({ userProducts, id }));
       }
     },
     [userProducts, dispatch]
   );
 
   const totalPrice = useMemo(() => {
-    const totalPrice = userProducts
-      .map((prop) =>
-        discount
-          ? prop.quantity * applyDiscount(prop.price)
-          : prop.price * prop.quantity
-      )
-      .reduce((partialSum, a) => partialSum + a, 0)
-      .toFixed(2);
-    dispatch(totalCost(totalPrice));
-    return totalPrice;
-  }, [discount, dispatch, userProducts]);
+    dispatch(totalCost({ userProducts, discount }));
+    return total;
+  }, [discount, dispatch, total, userProducts]);
 
   useEffect(() => {
     if (basketContainerRef.current) {

@@ -75,7 +75,7 @@ const ProductsList = () => {
             {!isBasket ? "Show basket" : "Hide basket"}
           </button>
           <button onClick={() => navigate(`/profile/${userId}`)}>
-            Back to profile
+            Go Back
           </button>
         </div>
       )}

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
+import { applyDiscount } from "../components/productsList/Basket";
 
 const initialData = {
   name: "",
@@ -51,11 +52,23 @@ const userSlice = createSlice({
     },
 
     deleteProducts: (state, action) => {
-      state.basket = action.payload;
+      action.payload.userProducts?.length
+        ? (state.basket = action.payload.userProducts.filter(
+            (item) => item.id !== action.payload.id
+          ))
+        : (state.basket = action.payload);
     },
 
     totalCost: (state, action) => {
-      state.totalPrice = action.payload;
+      const total = action.payload.userProducts
+        .map((prop) =>
+          action.payload.discount
+            ? prop.quantity * applyDiscount(prop.price)
+            : prop.price * prop.quantity
+        )
+        .reduce((partialSum, a) => partialSum + a, 0)
+        .toFixed(2);
+      state.totalPrice = total;
     },
 
     buyProduct: (state, action) => {

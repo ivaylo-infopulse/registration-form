@@ -148,9 +148,9 @@ export const Profile = () => {
         </div>
 
         <div className={`test ${className}`}>
-          <p>Name: {user.name}</p>
-          <p>Email: {user.email}</p>
-          <p>Phone: {user.phone}</p>
+          <p>Name: {user?.name}</p>
+          <p>Email: {user?.email}</p>
+          <p>Phone: {user?.phone}</p>
           {discount && <p>discount: 20%</p>}
 
           <button
