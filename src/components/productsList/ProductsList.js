@@ -1,12 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  logout,
-  buyProduct,
-  addProducts,
-  deleteProducts,
-} from "../../features/user";
+import { logout } from "../../features/user";
+import { buyProduct, addProducts, deleteProducts } from "../../features/basket";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,7 +14,7 @@ const ProductsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const registrationToken = localStorage.getItem("registrationToken");
-  const userProducts = useSelector((state) => state.user?.basket);
+  const userProducts = useSelector((state) => state.basket?.basket);
   const user = useSelector((state) => state.user.value.isUserExist);
   let { userId } = useParams();
   const [productList, setProductList] = useState([]);

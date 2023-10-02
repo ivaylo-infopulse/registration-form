@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { deleteProducts, buyProduct, logout } from "../../features/user";
+import { logout } from "../../features/user";
+import { buyProduct, deleteProducts } from "../../features/basket";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Basket, applyDiscount } from "../productsList/Basket";
@@ -12,10 +13,10 @@ const FinishOrder = () => {
   const registrationToken = localStorage.getItem("registrationToken");
   const { userId } = useParams();
   const user = useSelector((state) => state.user?.value.isUserExist);
-  const products = useSelector((state) => state.user?.basket);
-  const product = useSelector((state) => state.user?.productToBuy);
+  const products = useSelector((state) => state.basket?.basket);
+  const product = useSelector((state) => state.basket?.productToBuy);
   const totalPrice = parseFloat(
-    useSelector((state) => state.user.totalPrice)
+    useSelector((state) => state.basket.totalPrice)
   ).toFixed(2);
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteProducts, totalCost } from "../../features/user";
+import { deleteProducts, totalCost } from "../../features/basket";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router";
@@ -15,7 +15,7 @@ export const Basket = ({ discount, userProducts }) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { userId } = useParams();
-  const total = useSelector((state) => state.user.totalPrice);
+  const total = useSelector((state) => state.basket.totalPrice);
   const basketContainerRef = useRef(null);
   const isOrderBtn = location.pathname === `/products-list/${userId}`;
   const registrationToken = localStorage.getItem("registrationToken");

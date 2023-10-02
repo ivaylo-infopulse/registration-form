@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, deleteProducts } from "../../features/user";
+import { logout } from "../../features/user";
+import { deleteProducts } from "../../features/basket";
 import { timer } from "../../features/timer";
 import { useNavigate } from "react-router-dom";
 import { DeleteAcc } from "../deleteAccount/DeleteAcc";
