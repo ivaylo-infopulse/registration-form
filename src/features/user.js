@@ -60,7 +60,7 @@ const userSlice = createSlice({
     },
 
     totalCost: (state, action) => {
-      const total = action.payload.userProducts
+      state.totalPrice = action.payload.userProducts
         .map((prop) =>
           action.payload.discount
             ? prop.quantity * applyDiscount(prop.price)
@@ -68,7 +68,6 @@ const userSlice = createSlice({
         )
         .reduce((partialSum, a) => partialSum + a, 0)
         .toFixed(2);
-      state.totalPrice = total;
     },
 
     buyProduct: (state, action) => {

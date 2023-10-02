@@ -46,11 +46,7 @@ export const Profile = () => {
   };
 
   useEffect(() => {
-    if (newPass === newPassConfirm) {
-      setIsPassMatch(true);
-    } else {
-      setIsPassMatch(false);
-    }
+    newPass === newPassConfirm ? setIsPassMatch(true) : setIsPassMatch(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newPassConfirm]);
 
