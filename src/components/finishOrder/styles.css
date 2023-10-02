@@ -30,9 +30,23 @@
     flex-direction: column;
   }
 
-  & input {
+  & input{
     margin-bottom: 10px;
     border: 1.5px solid #cdb386;
+    text-transform: capitalize;
+  }
+
+  & select{
+    color: beige;
+    background: none;
+    border-radius: 5px;
+    border: 1.5px solid #cdb386;
+    & option{
+      &:first-child{
+        display: none;
+      }
+      background-color: rgb(82, 120, 159);
+    }
   }
 
   & label {

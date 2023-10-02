@@ -25,7 +25,11 @@ const FinishOrder = () => {
   const isItemDiscount = product?.discount
     ? applyDiscount(product?.price)
     : product?.price;
-
+  const locations = [
+    { bulgaria: ["Sofia", "Varna"] },
+    { ukraina: ["Kiev", "Zhytomyr"] },
+    { usa: ["NYC", "LA"] },
+  ];
   useEffect(() => {
     const checkTokenExpiration = () => {
       const token = JSON.parse(registrationToken);
@@ -48,7 +52,9 @@ const FinishOrder = () => {
       alert(
         `Your order const is ${
           isItemDiscount || totalPrice
-        }$ and will be send to ${country}, ${city}, ${street}, with phone number: ${phone}`
+        }$ and will be send to ${country}, ${city}, ${
+          street.charAt(0).toUpperCase() + street.slice(1)
+        }, with phone number: ${phone}`
       );
       !product?.price ? dispatch(deleteProducts([])) : dispatch(buyProduct());
       navigate(`/products-list/${userId}`);
@@ -77,19 +83,44 @@ const FinishOrder = () => {
       )}
       <form onSubmit={handleSubmit}>
         <label htmlFor="country">Country:</label>
-        <input
-          type="text"
-          placeholder="Enter your country"
+        <select
+          value={country}
           onChange={(e) => setCountry(e.target.value)}
           required
-        />
+        >
+          <option disabled value="">
+            Select country
+          </option>
+          {locations.map((location, index) => {
+            const country =
+              Object.keys(location)[0].charAt(0).toUpperCase() +
+              Object.keys(location)[0].slice(1);
+            return (
+              <option key={index} value={country}>
+                {country}
+              </option>
+            );
+          })}
+        </select>
+
         <label htmlFor="city">City:</label>
-        <input
-          type="text"
-          placeholder="Enter your city"
+        <select
+          value={city}
           onChange={(e) => setCity(e.target.value)}
           required
-        />
+          disabled={!country && true}
+        >
+          <option disabled value="">
+            Select city
+          </option>
+          {locations
+            .find((countryObj) => country.toLowerCase() in countryObj)
+            ?.[country.toLowerCase()].map((city, index) => (
+              <option key={index} value={city}>
+                {city}
+              </option>
+            ))}
+        </select>
         <label htmlFor="street">Street number:</label>
         <input
           type="text"
