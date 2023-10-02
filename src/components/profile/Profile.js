@@ -34,9 +34,9 @@ export const Profile = () => {
   });
 
   const onLogOut = () => {
-    dispatch(logout());
     dispatch(timer());
     dispatch(deleteProducts([]));
+    dispatch(logout());
     navigate("/");
     localStorage.removeItem("registrationToken");
     window.location.reload();

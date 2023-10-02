@@ -37,9 +37,9 @@ const FinishOrder = () => {
       const isExpired = Date.now() > token?.expiresAt;
       if (isExpired && discount) {
         setDiscount(false);
-        dispatch(logout());
         dispatch(deleteProducts([]));
         product && dispatch(buyProduct({ ...product, discount: 0 }));
+        dispatch(logout());
         alert("You session expired. Please login to use your discount");
       }
     };

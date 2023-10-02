@@ -30,8 +30,8 @@ const ProductsList = () => {
       const isExpired = Date.now() > token?.expiresAt;
       if (isExpired && discount) {
         setDiscount(false);
-        dispatch(logout());
         dispatch(deleteProducts([]));
+        dispatch(logout());
         alert("You session expired. Please login to use your discount");
       }
     };
