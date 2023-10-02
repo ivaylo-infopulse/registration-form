@@ -1,5 +1,5 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../features/user";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,12 @@ export const arrData = JSON.parse(localStorage.getItem("userData") || "[]");
 export const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { isUserExist, userId } = useSelector((state) => {
+    return {
+      isUserExist: state.user?.value.isUserExist,
+      userId: state.user?.value.userId,
+    };
+  });
 
   const {
     register,
@@ -33,22 +39,19 @@ export const Login = () => {
   };
 
   const onSubmit = async (data) => {
-    let userId;
-    const isProfileExist = arrData?.find((user, index) => {
-      userId = index;
-      return user.name === data.name;
-    });
-    if (isProfileExist) {
+    dispatch(login({ arrData, data }));
+  };
+
+  useEffect(() => {
+    if (isUserExist) {
       const registrationToken = generateUniqueRegistrationToken();
       localStorage.setItem(
         "registrationToken",
         JSON.stringify(registrationToken)
       );
-
-      dispatch(login(isProfileExist));
       navigate(`/profile/${userId}`);
     }
-  };
+  }, [isUserExist, navigate, userId]);
 
   return (
     <div>

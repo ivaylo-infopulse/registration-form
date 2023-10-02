@@ -14,7 +14,7 @@ export const Profile = () => {
   const imgInputRef = useRef();
   const registrationToken = localStorage.getItem("registrationToken");
   const existingData = JSON.parse(localStorage.getItem("userData"));
-  const user = useSelector((state) => state.user?.value);
+  const user = useSelector((state) => state.user?.value.isUserExist);
   const { userId } = useParams();
   const [isList, setIsList] = useState(false);
   const [selectedImage, setSelectedImage] = useState(
@@ -26,7 +26,7 @@ export const Profile = () => {
   const [newPassConfirm, setNewPassConfirm] = useState();
   const [isPassMatch, setIsPassMatch] = useState();
   const [popUp, setPopUp] = useState(false);
-  
+
   useEffect(() => {
     const token = JSON.parse(registrationToken);
     (Date.now() > token?.expiresAt) | !token && navigate("/");
@@ -70,7 +70,7 @@ export const Profile = () => {
       reader.onload = () => {
         existingData?.[userId] &&
           setSelectedImage((existingData[userId].image = reader.result));
-          localStorage.setItem("userData", JSON.stringify(existingData));
+        localStorage.setItem("userData", JSON.stringify(existingData));
       };
       reader.readAsDataURL(file);
     } else {
@@ -213,10 +213,16 @@ export const Profile = () => {
         Show List Of Users
       </button>
       {isList && <ListOfUsers />}
-      <button className="users-list" onClick={() => navigate(`/products-list/${userId}`)}>
+      <button
+        className="users-list"
+        onClick={() => navigate(`/products-list/${userId}`)}
+      >
         Go to products list
       </button>
-      <button className="sudoku-link" onClick={() => navigate(`/sudoku-game/${userId}`)}>
+      <button
+        className="sudoku-link"
+        onClick={() => navigate(`/sudoku-game/${userId}`)}
+      >
         Play Sudoku
       </button>
     </div>

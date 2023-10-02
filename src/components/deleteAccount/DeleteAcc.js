@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { timer } from "../../features/timer";
 
 export const DeleteAcc = (className) => {
-  const user = useSelector((state) => state.user?.value);
+  const user = useSelector((state) => state.user?.value.isUserExist);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

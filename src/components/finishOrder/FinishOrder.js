@@ -10,18 +10,22 @@ const FinishOrder = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const registrationToken = localStorage.getItem("registrationToken");
-  const {userId} = useParams();
-  const user = useSelector((state)=> state.user?.value)
+  const { userId } = useParams();
+  const user = useSelector((state) => state.user?.value.isUserExist);
   const products = useSelector((state) => state.user?.basket);
   const product = useSelector((state) => state.user?.productToBuy);
-  const totalPrice = parseFloat(useSelector((state) => state.user.totalPrice)).toFixed(2);
+  const totalPrice = parseFloat(
+    useSelector((state) => state.user.totalPrice)
+  ).toFixed(2);
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [street, setStreet] = useState("");
   const [phone, setPhone] = useState("");
   const [discount, setDiscount] = useState(user?.discount);
-  const isItemDiscount = product?.discount ? applyDiscount(product?.price) : product?.price
-  
+  const isItemDiscount = product?.discount
+    ? applyDiscount(product?.price)
+    : product?.price;
+
   useEffect(() => {
     const checkTokenExpiration = () => {
       const token = JSON.parse(registrationToken);
@@ -63,9 +67,7 @@ const FinishOrder = () => {
         <div className="item-wrapper">
           <div className="selected-item">Selected item</div>
           <img className="basket-img" src={product.image} alt="product pic" />
-          <label className="cost-price">
-            Price {isItemDiscount} $
-          </label>
+          <label className="cost-price">Price {isItemDiscount} $</label>
         </div>
       )}
       <form onSubmit={handleSubmit}>
@@ -99,7 +101,11 @@ const FinishOrder = () => {
           required
         />
         <label>Total amount to pay:</label>
-        <input type="text" value={`${isItemDiscount || totalPrice} $`} disabled />
+        <input
+          type="text"
+          value={`${isItemDiscount || totalPrice} $`}
+          disabled
+        />
         <div className="btn-wrapper">
           <button type="submit">Submit</button>
           <button onClick={onGoBack}>Go back</button>

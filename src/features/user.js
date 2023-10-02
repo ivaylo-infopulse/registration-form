@@ -26,7 +26,12 @@ const userSlice = createSlice({
   },
   reducers: {
     login: (state, action) => {
-      state.value = action.payload;
+      let userId;
+      const isUserExist = action.payload.arrData?.find((user, index) => {
+        userId = index;
+        return user.name === action.payload.data.name;
+      });
+      state.value = { isUserExist, userId };
     },
 
     logout: (state) => {
@@ -37,8 +42,8 @@ const userSlice = createSlice({
       state.basket = [...action.payload];
     },
 
-    totalCost: (state, action) =>{
-      state.totalPrice = action.payload
+    totalCost: (state, action) => {
+      state.totalPrice = action.payload;
     },
 
     buyProduct: (state, action) => {
@@ -47,7 +52,8 @@ const userSlice = createSlice({
   },
 });
 
-export const { login, logout, addProducts, totalCost, buyProduct } = userSlice.actions;
+export const { login, logout, addProducts, totalCost, buyProduct } =
+  userSlice.actions;
 
 const persistConfig = {
   key: "root",

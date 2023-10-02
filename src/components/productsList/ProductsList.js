@@ -14,7 +14,7 @@ const ProductsList = () => {
   const navigate = useNavigate();
   const registrationToken = localStorage.getItem("registrationToken");
   const userProducts = useSelector((state) => state.user?.basket);
-  const user = useSelector((state) => state.user.value);
+  const user = useSelector((state) => state.user.value.isUserExist);
   let { userId } = useParams();
   const [productList, setProductList] = useState([]);
   const [showAddButton, setShowAddButton] = useState(null);
@@ -23,7 +23,6 @@ const ProductsList = () => {
   );
   const [discount, setDiscount] = useState(user?.discount);
 
-  
   useEffect(() => {
     const checkTokenExpiration = () => {
       const token = JSON.parse(registrationToken);
@@ -50,7 +49,7 @@ const ProductsList = () => {
     })();
   }, []);
 
-  const onAddProduct = (image, price, id) => {
+  const onAddProducts = (image, price, id) => {
     setIsBaskt(true);
     window.scrollTo(0, 10);
     const existingProduct = userProducts.find((product) => product.id === id);
@@ -71,7 +70,6 @@ const ProductsList = () => {
     dispatch(buyProduct({ image, price, id, discount }));
     navigate(`/finish-order/${userId}`);
   };
-
 
   return (
     <>
@@ -121,7 +119,11 @@ const ProductsList = () => {
                         className="add-button"
                         onMouseEnter={() => setShowAddButton(index)}
                         onClick={() =>
-                          onAddProduct(product.image, product.price, product.id)
+                          onAddProducts(
+                            product.image,
+                            product.price,
+                            product.id
+                          )
                         }
                       >
                         Add to <FontAwesomeIcon icon={faShoppingBasket} />
