@@ -70,7 +70,14 @@ const ProductsList = () => {
           <button onClick={() => setIsBaskt(!isBasket)}>
             {!isBasket ? "Show basket" : "Hide basket"}
           </button>
-          <button onClick={() => navigate(`/profile/${userId}`)}>
+          <button
+            onClick={() => {
+              navigate(`/profile/${userId}`);
+              if (!userId) {
+                dispatch(deleteProducts([]));
+              }
+            }}
+          >
             Go Back
           </button>
         </div>

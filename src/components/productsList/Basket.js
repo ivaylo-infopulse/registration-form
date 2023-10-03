@@ -18,7 +18,8 @@ export const Basket = ({ discount, userProducts }) => {
   const total = useSelector((state) => state.basket.totalPrice);
   const basketContainerRef = useRef(null);
   const isOrderBtn =
-    location.pathname === `/products-list/${userId}` && `/products-list`;
+    location.pathname ===
+    (userId ? `/products-list/${userId}` : `/products-list`);
   const registrationToken = localStorage.getItem("registrationToken");
 
   const onDelete = useCallback(
