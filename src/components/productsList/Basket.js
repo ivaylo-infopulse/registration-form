@@ -17,7 +17,8 @@ export const Basket = ({ discount, userProducts }) => {
   const { userId } = useParams();
   const total = useSelector((state) => state.basket.totalPrice);
   const basketContainerRef = useRef(null);
-  const isOrderBtn = location.pathname === `/products-list/${userId}`;
+  const isOrderBtn =
+    location.pathname === `/products-list/${userId}` && `/products-list`;
   const registrationToken = localStorage.getItem("registrationToken");
 
   const onDelete = useCallback(
@@ -46,7 +47,7 @@ export const Basket = ({ discount, userProducts }) => {
       const animateScroll = (timestamp) => {
         if (!startTime) startTime = timestamp;
 
-        const progress = (timestamp - startTime) / 600;
+        const progress = (timestamp - startTime) / 400;
         basketContainerRef.current.scrollTop =
           currentScroll + (targetScroll - currentScroll) * progress;
         progress < 1 && requestAnimationFrame(animateScroll);

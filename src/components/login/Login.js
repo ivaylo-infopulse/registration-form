@@ -74,6 +74,9 @@ export const Login = () => {
         <Link className="link" to={"/register"}>
           Go to Registration
         </Link>
+        <Link className="link" to={"/products-list"}>
+          Go to shop
+        </Link>
       </form>
     </div>
   );
