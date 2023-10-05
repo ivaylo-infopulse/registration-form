@@ -5,9 +5,9 @@ import { Route, Routes } from "react-router-dom";
 import { Profile } from "./components/profile/Profile";
 import { Register } from "./components/registration/Register";
 import ForgetPassword from "./components/forgetPassword/ForgetPassword";
-import ProductsList from "./components/productsList/ProductsList";
+import ProductsList from "./components/shop/ProductsList";
 import TheGame from "./components/sudokuGame/TheGame";
-import FinishOrder from "./components/finishOrder/FinishOrder";
+import FinishOrder from "./components/shop/finishOrder/FinishOrder";
 
 function App() {
   return (

@@ -148,7 +148,7 @@
   }
 
   .product-price {
-    color: white;
+    color: #d4d3bb;
     display: flex;
     justify-content: center;
     gap: 5px;
@@ -157,9 +157,8 @@
     position: relative;
   }
 
-
   .add-discount {
-    color: rgb(255, 77, 0);
+    color: rgba(255, 81, 28, 0.858);
     
     &:after {
       position: absolute;
@@ -279,7 +278,7 @@
 
   .discount{
     display: block;
-    color:white;
+    color: #fff7e8;
     font-size: 18px;
     font-weight: bold;
   }

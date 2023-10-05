@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
-import { applyDiscount } from "../components/productsList/Basket";
+import { applyDiscount } from "../components/shop/Basket";
 
 const initialProducts = [
   {

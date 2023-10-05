@@ -50,6 +50,15 @@
   }
 }
 
+p::first-letter {
+  text-transform: uppercase;
+}
+
+/* Select the rest of the text and apply lowercase */
+p {
+  text-transform: lowercase;
+}
+
 .upload-img {
   padding: 7px 6px 6px 10px;
   &:hover {
@@ -201,10 +210,10 @@
 
 .users-list, .sudoku-link {
   margin-top: 5px;
-  background-color: rgb(138, 185, 95);
+  background-color: rgb(185 152 95 / 85%);
 
   &:hover {
-    background-color: rgb(178, 240, 121);
+    background-color: rgb(238, 185, 94);
   }
 }
 

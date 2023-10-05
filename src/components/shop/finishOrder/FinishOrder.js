@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { logout } from "../../features/user";
-import { buyProduct, deleteProducts } from "../../features/basket";
+import { logout } from "../../../features/user";
+import { buyProduct, deleteProducts } from "../../../features/basket";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Basket, applyDiscount } from "../productsList/Basket";
+import { Basket, applyDiscount } from "../Basket";
 import "./styles.css";
 
 const FinishOrder = () => {
@@ -27,9 +27,11 @@ const FinishOrder = () => {
     ? applyDiscount(product?.price)
     : product?.price;
   const locations = [
-    { bulgaria: ["Sofia", "Varna"] },
-    { ukraina: ["Kiev", "Zhytomyr"] },
-    { usa: ["NYC", "LA"] },
+    {
+      bulgaria: ["Sofia", "Plovdiv", "Varna", "Burgas", "Ruse", "Stara Zagora"],
+    },
+    { ukraina: ["Kiev", "Odesa", "Zhytomyr"] },
+    { usa: ["New Yourk", "Los Angeles", "Miami", "Chicago"] },
   ];
   useEffect(() => {
     const checkTokenExpiration = () => {
