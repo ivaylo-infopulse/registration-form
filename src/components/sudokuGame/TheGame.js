@@ -151,7 +151,7 @@ const TheGame = () => {
 
   useEffect(() => {
     !token && navigate("/");
-    if (isReady.isComplate) {
+    if (isReady.isComplate && isSolved) {
       !isStop && alert("Great, you solved!");
       setIsStop(true);
       buttonRef.current.click(); // Triger getTimeScore function
