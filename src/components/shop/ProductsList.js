@@ -4,20 +4,20 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../features/user";
 import { buyProduct, addProducts, deleteProducts } from "../../features/basket";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
 import { Basket, applyDiscount } from "./Basket";
+import { useFetch } from "../customHooks/useFetch";
 import "./styles.css";
 
 const ProductsList = () => {
+  const { data: productList } = useFetch("https://fakestoreapi.com/products");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const registrationToken = localStorage.getItem("registrationToken");
   const userProducts = useSelector((state) => state.basket?.basket);
   const user = useSelector((state) => state.user.value.isUserExist);
   let { userId } = useParams();
-  const [productList, setProductList] = useState([]);
   const [showAddButton, setShowAddButton] = useState(null);
   const [isBasket, setIsBaskt] = useState(
     userProducts.length === 0 ? false : true
@@ -38,17 +38,6 @@ const ProductsList = () => {
     const checkInterval = setInterval(checkTokenExpiration, 100);
     return () => clearInterval(checkInterval);
   }, [discount, dispatch, registrationToken, user]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get("https://fakestoreapi.com/products");
-        setProductList(response.data);
-      } catch (error) {
-        console.error("Error fetching product data:", error);
-      }
-    })();
-  }, []);
 
   const onAddProducts = (image, price, id) => {
     setIsBaskt(true);

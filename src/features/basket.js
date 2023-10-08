@@ -3,17 +3,10 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import { applyDiscount } from "../components/shop/Basket";
 
-const initialProducts = [
-  {
-    image: "",
-    price: "",
-  },
-];
-
 const basketSlice = createSlice({
   name: "basket",
   initialState: {
-    basket: initialProducts,
+    basket: [],
     productToBuy: {},
     totalPrice: "",
   },

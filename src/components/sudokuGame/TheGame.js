@@ -1,19 +1,21 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { randomSudoku } from "./GridGenerator";
 import { Timer } from "../timer/Timer";
+import { login } from "../../features/user";
 import "./SudokuBoard.css";
 
 const initialGrid = randomSudoku;
 
 const TheGame = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const getTime = useSelector((state) => state.timer?.time);
-  const {userId} = useParams()
+  const { userId } = useParams();
   const registrationToken = localStorage.getItem("registrationToken");
-  const [isStop, setIsStop] = useState(true);
+  const [isStop, setIsStop] = useState();
   const [isSolved, setIsSolved] = useState(true);
   const buttonRef = useRef(null);
 
@@ -146,37 +148,54 @@ const TheGame = () => {
   const isReady = compareSudokus(sudokuArr, sudoku);
   const token = JSON.parse(registrationToken);
   const timeExpiration = Date.now() > token?.expiresAt;
-  
+
   useEffect(() => {
-    !token && navigate("/"); 
+    !token && navigate("/");
     if (isReady.isComplate && isSolved) {
-      setIsStop(false);
+      !isStop && alert("Great, you solved!");
+      setIsStop(true);
       buttonRef.current.click(); // Triger getTimeScore function
-      alert("Great, you solved!");
     }
     if (timeExpiration) {
       alert("Your session has been expired!");
       navigate("/");
     }
-  }, [isReady.isComplate, isSolved, navigate, registrationToken, timeExpiration, token]);
+  }, [
+    isReady.isComplate,
+    isSolved,
+    isStop,
+    navigate,
+    registrationToken,
+    timeExpiration,
+    token,
+  ]);
 
   const getTimeScore = (theTime) => {
     const existingData = JSON.parse(localStorage.getItem("userData"));
     const userTimeScore = existingData[userId]?.timeScore;
+
     // check for if user has time score and update for the best scored time
     if (
       userTimeScore === undefined ||
-      userTimeScore === '' ||
-      theTime < userTimeScore & theTime !== ''
-    )  {
-        if( theTime < '00:01:30' && theTime!=='' && !existingData[userId].discount){
-          existingData[userId].discount = true;
-          localStorage.setItem("userData", JSON.stringify(existingData));
-          alert('You solve it under 1:30min, so you win 20% discount of all products')
-        }
-        theTime && (existingData[userId].timeScore = theTime);
+      userTimeScore === "" ||
+      (theTime < userTimeScore) & (theTime !== "")
+    ) {
+      theTime && (existingData[userId].timeScore = theTime);
+      localStorage.setItem("userData", JSON.stringify(existingData));
+
+      if (
+        theTime < "00:00:05" &&
+        theTime !== "" &&
+        !existingData[userId].discount
+      ) {
+        existingData[userId].discount = true;
         localStorage.setItem("userData", JSON.stringify(existingData));
+        dispatch(login({ arrData: existingData, data: existingData[userId] }));
+        alert(
+          "You solve it under 1:30min, so you win 20% discount of all products"
+        );
       }
+    }
   };
 
   return (
@@ -185,12 +204,12 @@ const TheGame = () => {
         <tbody className="sudoku-board">
           <button ref={buttonRef} onClick={getTimeScore(getTime)} />
           <button
-            className={isStop ? "" : "go-back-green"}
+            className={!isStop ? "" : "go-back-green"}
             onClick={() => navigate(`/profile/${userId}`)}
           >
             Go back
           </button>
-          <Timer isRunning={isStop} />
+          <Timer isRunning={!isStop} />
 
           {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((row, rowIndex) => (
             <tr
