@@ -120,7 +120,7 @@ export const Profile = () => {
             <ul className="dropdown-menu2">
               <li>Profile Info</li>
               <li>
-                <DeleteAcc className={className} />
+                <DeleteAcc className={className} existingData={existingData} />
               </li>
               <li>
                 <button

@@ -1,14 +1,15 @@
 import React from "react";
-import { arrData } from "../login/Login";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { timer } from "../../features/timer";
 import { useLocalStorage } from "react-use";
+import { logout } from "../../features/user";
 
-export const DeleteAcc = (className) => {
+export const DeleteAcc = (className, { existingData }) => {
   const user = useSelector((state) => state.user?.value.isUserExist);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const existingUsers = existingData;
   const [, setDeletedUser] = useLocalStorage("userData");
 
   const onDelete = () => {
@@ -18,9 +19,14 @@ export const DeleteAcc = (className) => {
 
     if (confirmed) {
       dispatch(timer());
-      const deletedData = arrData.filter((item) => item !== user);
-      setDeletedUser(deletedData);
+      const deletedData = existingUsers.filter(
+        (item) => item.name !== user.name
+      );
+      existingData.length === 1
+        ? setDeletedUser([])
+        : setDeletedUser(deletedData);
       navigate("/");
+      dispatch(logout());
       window.location.reload();
     }
   };

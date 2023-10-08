@@ -151,7 +151,7 @@ const TheGame = () => {
 
   useEffect(() => {
     !token && navigate("/");
-    if (isReady.isComplate && isSolved) {
+    if (isReady.isComplate) {
       !isStop && alert("Great, you solved!");
       setIsStop(true);
       buttonRef.current.click(); // Triger getTimeScore function
@@ -184,7 +184,7 @@ const TheGame = () => {
       localStorage.setItem("userData", JSON.stringify(existingData));
 
       if (
-        theTime < "00:00:05" &&
+        theTime < "00:02:00" &&
         theTime !== "" &&
         !existingData[userId].discount
       ) {
@@ -192,7 +192,7 @@ const TheGame = () => {
         localStorage.setItem("userData", JSON.stringify(existingData));
         dispatch(login({ arrData: existingData, data: existingData[userId] }));
         alert(
-          "You solve it under 1:30min, so you win 20% discount of all products"
+          "You solve it under 2 min, so you win 20% discount of all products"
         );
       }
     }

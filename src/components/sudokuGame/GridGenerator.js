@@ -5,7 +5,7 @@ const checkRow = (grid, row, num) => {
 
 // if true the num can be placed in a specific col of the grid
 const checkCol = (grid, col, num) => {
-  return grid.map(row => row[col]).indexOf(num) === -1;
+  return grid.map((row) => row[col]).indexOf(num) === -1;
 };
 
 // check if the num can be placed in the box, if yes return true
@@ -23,18 +23,16 @@ const checkBox = (grid, row, col, num) => {
   return true;
 };
 
-
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function shuffleArray(array) {
-  for (let i =1; i < array.length; i++) {
+  for (let i = 1; i < array.length; i++) {
     const j = getRandomNumber(0, i);
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
-
 
 function generateRandomSudoku() {
   const gridSize = 9;
@@ -62,14 +60,18 @@ function generateRandomSudoku() {
     shuffleArray(values);
 
     for (const value of values) {
-      if (checkRow(randomGrid, row, value) && checkCol(randomGrid, col, value) && checkBox(randomGrid, row, col, value)) {
+      if (
+        checkRow(randomGrid, row, value) &&
+        checkCol(randomGrid, col, value) &&
+        checkBox(randomGrid, row, col, value)
+      ) {
         randomGrid[row][col] = value; // adding the value to the input
 
         // if the grid can be filled from this point, return true
         if (fillGrid(nextRow, nextCol)) {
           return true;
         }
-        
+
         randomGrid[row][col] = 0; // reset the value if the grid can't be filled
       }
     }
@@ -77,18 +79,18 @@ function generateRandomSudoku() {
     return false; // No valid value can be placed, so we trigger checking loop again
   };
 
-  fillGrid(0, 0); 
-  
+  fillGrid(0, 0);
+
   const emptyCellProbability = 0.5;
   // Randomly convert some filled cells to empty cells based on probability
   for (let row = 0; row < gridSize; row++) {
     for (let col = 0; col < gridSize; col++) {
       if (randomGrid[row][col] !== 0 && Math.random() < emptyCellProbability) {
-        randomGrid[row][col] = -1; 
+        randomGrid[row][col] = -1;
       }
     }
   }
-  randomGrid[gridSize-1][gridSize-1] = -1;
+  randomGrid[gridSize - 1][gridSize - 1] = -1;
   return randomGrid;
 }
 
