@@ -30,7 +30,7 @@ export const Login = () => {
   const generateUniqueRegistrationToken = () => {
     const shortid = require("shortid");
     const token = shortid.generate();
-    const expirationTime = Date.now() + 10 * 1000; // 1h in milliseconds
+    const expirationTime = Date.now() + 60 * 60 * 1000; // 1h in milliseconds
 
     return {
       token,

@@ -31,7 +31,7 @@ export const Profile = () => {
   useEffect(() => {
     const token = JSON.parse(registrationToken);
     const isExpired = Date.now() > token?.expiresAt;
-    isExpired | (token === null) && onLogOut();
+    (isExpired || !token) && onLogOut();
   });
 
   const onLogOut = () => {
